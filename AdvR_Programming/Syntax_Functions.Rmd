@@ -2,3 +2,10 @@
 title: "Specific function applications"
 output: html_notebook
 ---
+
+
+```{r}
+#Regex to find numbers at the beginning of a line
+"^\d{1,2}\b$"
+```
+

@@ -143,7 +143,7 @@ $(document).ready(function () {
 <script src="data:application/x-javascript;base64,Cgp3aW5kb3cuaW5pdGlhbGl6ZVNvdXJjZUVtYmVkID0gZnVuY3Rpb24oZmlsZW5hbWUpIHsKICAkKCIjcm1kLWRvd25sb2FkLXNvdXJjZSIpLmNsaWNrKGZ1bmN0aW9uKCkgewogICAgdmFyIHNyYyA9IHdpbmRvdy5hdG9iKCQoIiNybWQtc291cmNlLWNvZGUiKS5odG1sKCkpOwogICAgdmFyIGJsb2IgPSBuZXcgQmxvYihbc3JjXSwge3R5cGU6ICJ0ZXh0L3gtci1tYXJrZG93biJ9KTsKICAgIHNhdmVBcyhibG9iLCBmaWxlbmFtZSk7CiAgfSk7Cn07Cg=="></script>
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Notes_Week2.Rmd");
+  window.initializeSourceEmbed("README.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
@@ -173,20 +173,512 @@ $(document).ready(function () {
 
 
 <!-- rnb-text-begin -->
-<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Ctrl+Shift+Enter</em>.</p>
+<div id="course-note-from-week-2---advanced-programming-in-r" class="section level2">
+<h2>Course Note from Week 2 - Advanced Programming in R</h2>
+<div id="functional-programming" class="section level3">
+<h3>Functional Programming</h3>
+<p>Functional programming is a programming philosophy based onlambda calculus. Lambda calculus was created by Alonzo Church, the PhD adviser to Alan Turing who is known for his role in cracking the encryption of the Nazi’s Enigma machine during World War Two. Functional programming has been a popular approach ever since it helped bring down the Third Reich. Functional programming concentrates on four constructs: Data (numbers, strings, etc) Variables (function arguments) Functions Function Applications (evaluating functions given arguments and/or data) By now you’re used to treating variables inside of functions as data, whether they’re values like numbers and strings, or they’re data structures like lists and vectors. With functional programming you can also consider the possibility that you can provide a function as an argument to another function, and a function can return another function as its result. If you’ve used functions like sapply() or args() then it’s easy to imagine how functions as arguments to other functions can be used. In the case of sapply() the provided function is applied to data, and in the case of args() information about the function is returned. What’s rarer to see is a function that returns a function when it’s evaluated. Let’s look at a small example of how this can work:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWRkZXJfbWFrZXIgPC0gZnVuY3Rpb24obil7XG4gZnVuY3Rpb24oeCl7XG4gICBuICsgeFxuIH1cbn1cbmFkZDIgPC0gYWRkZXJfbWFrZXIoMilcbmFkZDMgPC0gYWRkZXJfbWFrZXIoMylcbmFkZDIoNSlcbmBgYCJ9 -->
+<pre class="r"><code>adder_maker &lt;- function(n){
+ function(x){
+   n + x
+ }
+}
+add2 &lt;- adder_maker(2)
+add3 &lt;- adder_maker(3)
+add2(5)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDdcbiJ9 -->
+<pre><code>[1] 7</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYWRkMyg1KVxuYGBgIn0= -->
+<pre class="r"><code>add3(5)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDhcbiJ9 -->
+<pre><code>[1] 8</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>In the example above the function adder_maker() returns a function with no name. The function returned adds n to its only argument x.</p>
+</div>
+<div id="core-functional-programming-function-in-r" class="section level3">
+<h3>Core Functional Programming Function in R</h3>
+<p>There are groups of functions that are essential for functional programming. In most cases they take a function and a data structure as arguments, and that function is applied to that data structure in some way. The purrr require contains many of these functions and we’ll be using it throughout this section. Function programming is concerned mostly with lists and vectors. I may refer to just lists or vectors, but you should know that what applies for lists generally applies for vectors and vice-versa.</p>
+<div id="map" class="section level4">
+<h4>map()</h4>
+<p>The map family of functions applies a function to the elements of a data structure, usually a list or a vector. The function is evaluated once for each element of the vector with the vector element as the first argument to the function. The return value is the same kind if data structure (a list or vector) but with every element replaced by the result of the function being evaluated with the corresponding element as the argument to the function. In the purrr package the map() function returns a list, while the map_lgl(), map_chr(), and map_dbl()functions return vectors of logical values, strings, or numbers respectively. Let’s take a look at a few examples:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVxdWlyZShwdXJycilcbm1hcF9jaHIoYyg1LCA0LCAzLCAyLCAxKSwgZnVuY3Rpb24oeCl7XG4gYyhcIm9uZVwiLCBcInR3b1wiLCBcInRocmVlXCIsIFwiZm91clwiLCBcImZpdmVcIilbeF1cbn0pXG5gYGAifQ== -->
+<pre class="r"><code>require(purrr)
+map_chr(c(5, 4, 3, 2, 1), function(x){
+ c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;)[x]
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiZml2ZVwiICBcImZvdXJcIiAgXCJ0aHJlZVwiIFwidHdvXCIgICBcIm9uZVwiICBcbiJ9 -->
+<pre><code>[1] &quot;five&quot;  &quot;four&quot;  &quot;three&quot; &quot;two&quot;   &quot;one&quot;  </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFwX2xnbChjKDEsIDIsIDMsIDQsIDUpLCBmdW5jdGlvbih4KXtcbiB4ID4gM1xufSlcbmBgYCJ9 -->
+<pre class="r"><code>map_lgl(c(1, 2, 3, 4, 5), function(x){
+ x &gt; 3
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFIEZBTFNFIEZBTFNFICBUUlVFICBUUlVFXG4ifQ== -->
+<pre><code>[1] FALSE FALSE FALSE  TRUE  TRUE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Think about evaluating each function above with just one of the arguments in the specified numeric vector, and then combining all of those function results into one vector. The map_if() function takes as its arguments a list or vector containing data, a predicate function, and then a function to be applied. A predicate function is a function that returns TRUE orFALSE for each element in the provided list or vector. In the case ofmap_if(): if the predicate functions evaluates to TRUE, then the function is applied to the corresponding vector element, owever if the predicate function evaluates to FALSE then the function is not applied. The map_if() function always returns a list, so I’m piping the result of map_if() to unlist() so it look prettier</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFwX2lmKDE6NSwgZnVuY3Rpb24oeCl7XG4gICAgICAgICAgICAgeCAlJSAyID09IDBcbiAgICAgICAgICAgfSxcbiAgICAgICAgICAgZnVuY3Rpb24oeSl7XG4gICAgICAgICAgICAgeV4yXG4gICAgICAgICAgIH0pICU+JSB1bmxpc3QoKVxuYGBgIn0= -->
+<pre class="r"><code>map_if(1:5, function(x){
+             x %% 2 == 0
+           },
+           function(y){
+             y^2
+           }) %&gt;% unlist()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdICAxICA0ICAzIDE2ICA1XG4ifQ== -->
+<pre><code>[1]  1  4  3 16  5</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Notice how only the even numbers are squared, while the odd numbers are left alone. The map_at() function only applies the provided function to elements of a vector specified by their indexes. map_at() always returns a list so like before I’m piping the result to unlist():</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFwX2F0KHNlcSgxMDAsIDUwMCwgMTAwKSwgYygxLCAzLCA1KSwgZnVuY3Rpb24oeCl7XG4geCAtIDEwXG59KSAlPiUgdW5saXN0KClcbmBgYCJ9 -->
+<pre class="r"><code>map_at(seq(100, 500, 100), c(1, 3, 5), function(x){
+ x - 10
+}) %&gt;% unlist()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdICA5MCAyMDAgMjkwIDQwMCA0OTBcbiJ9 -->
+<pre><code>[1]  90 200 290 400 490</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Like we expected to happen the providied function is only applied to the first, third, and fifth element of the vector provided. In each of the examples above we have only been mapping a function over one data structure, however you can map a function over two data structures with the map2() family of functions. The first two arguments should be two vectors of the same length, followed by a function which will be evaluated with an element of the first vector as the first argument and an element of the second vector as the second argument. For example:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFwMl9jaHIobGV0dGVycywgMToyNiwgcGFzdGUpXG5gYGAifQ== -->
+<pre class="r"><code>map2_chr(letters, 1:26, paste)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImEgMVwiICBcImIgMlwiICBcImMgM1wiICBcImQgNFwiICBcImUgNVwiICBcImYgNlwiICBcImcgN1wiICBcImggOFwiICBcImkgOVwiICBcImogMTBcIiBcImsgMTFcIiBcImwgMTJcIiBcIm0gMTNcIiBcIm4gMTRcIiBcIm8gMTVcIiBcInAgMTZcIiBcInEgMTdcIiBcInIgMThcIiBcInMgMTlcIiBcInQgMjBcIiBcInUgMjFcIiBcInYgMjJcIiBcIncgMjNcIiBcInggMjRcIiBcInkgMjVcIiBcInogMjZcIlxuIn0= -->
+<pre><code> [1] &quot;a 1&quot;  &quot;b 2&quot;  &quot;c 3&quot;  &quot;d 4&quot;  &quot;e 5&quot;  &quot;f 6&quot;  &quot;g 7&quot;  &quot;h 8&quot;  &quot;i 9&quot;  &quot;j 10&quot; &quot;k 11&quot; &quot;l 12&quot; &quot;m 13&quot; &quot;n 14&quot; &quot;o 15&quot; &quot;p 16&quot; &quot;q 17&quot; &quot;r 18&quot; &quot;s 19&quot; &quot;t 20&quot; &quot;u 21&quot; &quot;v 22&quot; &quot;w 23&quot; &quot;x 24&quot; &quot;y 25&quot; &quot;z 26&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The pmap() family of functions is similar to map2(), however instead of mapping across two vectors or lists, you can map across any number of lists. The list argument is a list of lists that the function will map over, followed by the function that will applied:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG1hcF9jaHIobGlzdChcbiBsaXN0KDEsIDIsIDMpLFxuIGxpc3QoXCJvbmVcIiwgXCJ0d29cIiwgXCJ0aHJlZVwiKSxcbiBsaXN0KFwidW5vXCIsIFwiZG9zXCIsIFwidHJlc1wiKVxuKSwgcGFzdGUpXG5gYGAifQ== -->
+<pre class="r"><code>pmap_chr(list(
+ list(1, 2, 3),
+ list(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;),
+ list(&quot;uno&quot;, &quot;dos&quot;, &quot;tres&quot;)
+), paste)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiMSBvbmUgdW5vXCIgICAgXCIyIHR3byBkb3NcIiAgICBcIjMgdGhyZWUgdHJlc1wiXG4ifQ== -->
+<pre><code>[1] &quot;1 one uno&quot;    &quot;2 two dos&quot;    &quot;3 three tres&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Mapping is a powerful technique for thinking about how to apply computational operations to your data.</p>
+</div>
+<div id="reduce" class="section level4">
+<h4>reduce()</h4>
+<p>List or vector reduction iteratively combines the first element of a vector with the second element of a vector, then that combined result is combined with the third element of the vector, and so on until the end of the vector is reached. The function to be applied should take at least two arguments. Where mapping returns a vector or a list, reducing should return a single value. Some examples usingreduce() are illustrated below:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVkdWNlKGMoMSwgMywgNSwgNyksIGZ1bmN0aW9uKHgsIHkpe1xuIG1lc3NhZ2UoXCJ4IGlzIFwiLCB4KVxuIG1lc3NhZ2UoXCJ5IGlzIFwiLCB5KVxuIG1lc3NhZ2UoXCJcIilcbiB4ICsgeVxufSlcbmBgYCJ9 -->
+<pre class="r"><code>reduce(c(1, 3, 5, 7), function(x, y){
+ message(&quot;x is &quot;, x)
+ message(&quot;y is &quot;, y)
+ message(&quot;&quot;)
+ x + y
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoieCBpcyAxXG55IGlzIDNcblxueCBpcyA0XG55IGlzIDVcblxueCBpcyA5XG55IGlzIDdcbiJ9 -->
+<pre><code>x is 1
+y is 3
+
+x is 4
+y is 5
+
+x is 9
+y is 7</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE2XG4ifQ== -->
+<pre><code>[1] 16</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>On the first iteration x has the value 1 and y has the value 3, then the two values are combined (they’re added together). On the second iteration x has the value of the result from the first iteration (4) and y has the value of the third element in the provided numeric vector (5). This process is repeated for each iteration. Here’s a similar example using string data:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVkdWNlKGxldHRlcnNbMTo0XSwgZnVuY3Rpb24oeCwgeSl7XG4gbWVzc2FnZShcInggaXMgXCIsIHgpXG4gbWVzc2FnZShcInkgaXMgXCIsIHkpXG4gbWVzc2FnZShcIlwiKVxuIHBhc3RlMCh4LCB5KVxufSlcbmBgYCJ9 -->
+<pre class="r"><code>reduce(letters[1:4], function(x, y){
+ message(&quot;x is &quot;, x)
+ message(&quot;y is &quot;, y)
+ message(&quot;&quot;)
+ paste0(x, y)
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoieCBpcyBhXG55IGlzIGJcblxueCBpcyBhYlxueSBpcyBjXG5cbnggaXMgYWJjXG55IGlzIGRcbiJ9 -->
+<pre><code>x is a
+y is b
+
+x is ab
+y is c
+
+x is abc
+y is d</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiYWJjZFwiXG4ifQ== -->
+<pre><code>[1] &quot;abcd&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>By default reduce() starts with the first element of a vector and then the second element and so on. In contrast the reduce_right()function starts with the last element of a vector and then proceeds to the second to last element of a vector and so on:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVkdWNlX3JpZ2h0KGxldHRlcnNbMTo0XSwgZnVuY3Rpb24oeCwgeSl7XG4gbWVzc2FnZShcInggaXMgXCIsIHgpXG4gbWVzc2FnZShcInkgaXMgXCIsIHkpXG4gbWVzc2FnZShcIlwiKVxuIHBhc3RlMCh4LCB5KVxufSlcbmBgYCJ9 -->
+<pre class="r"><code>reduce_right(letters[1:4], function(x, y){
+ message(&quot;x is &quot;, x)
+ message(&quot;y is &quot;, y)
+ message(&quot;&quot;)
+ paste0(x, y)
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoieCBpcyBkXG55IGlzIGNcblxueCBpcyBkY1xueSBpcyBiXG5cbnggaXMgZGNiXG55IGlzIGFcbiJ9 -->
+<pre><code>x is d
+y is c
+
+x is dc
+y is b
+
+x is dcb
+y is a</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiZGNiYVwiXG4ifQ== -->
+<pre><code>[1] &quot;dcba&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="search" class="section level4">
+<h4>search()</h4>
+<p>You can search for specific elements of a vector using thecontains() and detect() functions. contains() will returnTRUE if a specified element is present in a vector, otherwise it returnsFALSE:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29udGFpbnMobGV0dGVycywgXCJhXCIpXG5gYGAifQ== -->
+<pre class="r"><code>contains(letters, &quot;a&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
+<pre><code>[1] TRUE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29udGFpbnMobGV0dGVycywgXCJBXCIpXG5gYGAifQ== -->
+<pre class="r"><code>contains(letters, &quot;A&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
+<pre><code>[1] FALSE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The detect() function takes a vector and a predicate function as arguments and it returns the first element of the vector for which the predicate function returns TRUE:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGV0ZWN0KDIwOjQwLCBmdW5jdGlvbih4KXtcbiB4ID4gMjIgJiYgeCAlJSAyID09IDBcbn0pXG5gYGAifQ== -->
+<pre class="r"><code>detect(20:40, function(x){
+ x &gt; 22 &amp;&amp; x %% 2 == 0
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDI0XG4ifQ== -->
+<pre><code>[1] 24</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The detect_index() function takes the same arguments, however it returns the index of the provided vector which contains the first element that satisfies the predicate function:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGV0ZWN0X2luZGV4KDIwOjQwLCBmdW5jdGlvbih4KXtcbiB4ID4gMjIgJiYgeCAlJSAyID09IDBcbn0pXG5gYGAifQ== -->
+<pre class="r"><code>detect_index(20:40, function(x){
+ x &gt; 22 &amp;&amp; x %% 2 == 0
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDVcbiJ9 -->
+<pre><code>[1] 5</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="filter" class="section level4">
+<h4>Filter</h4>
+<p>The group of functions that includes keep(), discard(),every(), and some() are known as filter functions. Each of these functions takes a vector and a predicate function. For keep() only the elements of the vector that satisfy the predicate function are returned while all other elements are removed:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2VlcCgxOjIwLCBmdW5jdGlvbih4KXtcbiB4ICUlIDIgPT0gMFxufSlcbmBgYCJ9 -->
+<pre class="r"><code>keep(1:20, function(x){
+ x %% 2 == 0
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAgMiAgNCAgNiAgOCAxMCAxMiAxNCAxNiAxOCAyMFxuIn0= -->
+<pre><code> [1]  2  4  6  8 10 12 14 16 18 20</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The discard() function works similarly, it only returns elements that don’t satisfy the predicate function:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGlzY2FyZCgxOjIwLCBmdW5jdGlvbih4KXtcbiB4ICUlIDIgPT0gMFxufSlcbmBgYCJ9 -->
+<pre class="r"><code>discard(1:20, function(x){
+ x %% 2 == 0
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAgMSAgMyAgNSAgNyAgOSAxMSAxMyAxNSAxNyAxOVxuIn0= -->
+<pre><code> [1]  1  3  5  7  9 11 13 15 17 19</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The every() function returns TRUE only if every element in the vector satisfies the predicate function, while the some() function returns TRUE if at least one element in the vector satisfies the predicate function:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZXZlcnkoMToyMCwgZnVuY3Rpb24oeCl7XG4geCAlJSAyID09IDBcbn0pXG5gYGAifQ== -->
+<pre class="r"><code>every(1:20, function(x){
+ x %% 2 == 0
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
+<pre><code>[1] FALSE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc29tZSgxOjIwLCBmdW5jdGlvbih4KXtcbiB4ICUlIDIgPT0gMFxufSlcbmBgYCJ9 -->
+<pre class="r"><code>some(1:20, function(x){
+ x %% 2 == 0
+})</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFRSVUVcbiJ9 -->
+<pre><code>[1] TRUE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="compose" class="section level4">
+<h4>Compose</h4>
+<p>Finally, the compose() function combines any number of functions into one function:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubl91bmlxdWUgPC0gY29tcG9zZShsZW5ndGgsIHVuaXF1ZSlcbiMgVGhlIGNvbXBvc2l0aW9uIGFib3ZlIGlzIHRoZSBzYW1lIGFzOlxuIyBuX3VuaXF1ZSA8LSBmdW5jdGlvbih4KXtcbiMgICBsZW5ndGgodW5pcXVlKHgpKVxuIyB9XG5yZXAoMTo1LCAxOjUpXG5gYGAifQ== -->
+<pre class="r"><code>n_unique &lt;- compose(length, unique)
+# The composition above is the same as:
+# n_unique &lt;- function(x){
+#   length(unique(x))
+# }
+rep(1:5, 1:5)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAxIDIgMiAzIDMgMyA0IDQgNCA0IDUgNSA1IDUgNVxuIn0= -->
+<pre><code> [1] 1 2 2 3 3 3 4 4 4 4 5 5 5 5 5</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubl91bmlxdWUocmVwKDE6NSwgMTo1KSlcbmBgYCJ9 -->
+<pre class="r"><code>n_unique(rep(1:5, 1:5))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDVcbiJ9 -->
+<pre><code>[1] 5</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="partial-application" class="section level4">
+<h4>Partial Application</h4>
+<p>Partial application of functions can allow functions to behave a little like data structures. Using the partial() function from the purrrpackage you can specify some of the arguments of a function, and then partial() will return a function that only takes the unspecified arguments. Let’s take a look at a simple example:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVxdWlyZShwdXJycilcbm11bHRfdGhyZWVfbiA8LSBmdW5jdGlvbih4LCB5LCB6KXtcbiB4ICogeSAqIHpcbn1cbm11bHRfYnlfMTUgPC0gcGFydGlhbChtdWx0X3RocmVlX24sIHggPSAzLCB5ID0gNSlcbm11bHRfYnlfMTUoeiA9IDQpXG5gYGAifQ== -->
+<pre class="r"><code>require(purrr)
+mult_three_n &lt;- function(x, y, z){
+ x * y * z
+}
+mult_by_15 &lt;- partial(mult_three_n, x = 3, y = 5)
+mult_by_15(z = 4)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDYwXG4ifQ== -->
+<pre><code>[1] 60</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>By using partial application you can bind some data to the arguments of a function before using that function elsewhere.</p>
+</div>
+<div id="side-effects" class="section level4">
+<h4>Side Effects</h4>
+<p>Side effects of functions occur whenever a function interacts with the “outside world” – reading or writing data, printing to the console, and displaying a graph are all side effects. The results of side effects are one of the main motivations for writing code in the first place! Side effects can be tricky to handle though, since the order in which functions with side effects are executed often matters and there are variables that are external to the program (the relative location of some data). If you want to evaluate a function across a data structure you should use the walk() function from purrr. Here’s a simple example:</p>
+</div>
+</div>
+<div id="recursion" class="section level3">
+<h3>Recursion</h3>
+<p>Recursion is very powerful tool, both mentally and in software development, for solving problems. Recursive functions have two main parts: a few easy to solve problems called “base cases,” and then a case for more complicated problems where the function is called inside of itself. The central philosophy of recursive programming is that problems can be broken down into simpler parts, and then combining those simple answers results in the answer to a complex problem. Imagine you wanted to write a function that adds together all of the numbers in a vector. You could of course accomplish this with a loop:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmVjdG9yX3N1bV9sb29wIDwtIGZ1bmN0aW9uKHYpe1xuIHJlc3VsdCA8LSAwXG4gZm9yKGkgaW4gdil7XG4gICByZXN1bHQgPC0gcmVzdWx0ICsgaVxuIH1cbiByZXN1bHRcbn1cbnZlY3Rvcl9zdW1fbG9vcChjKDUsIDQwLCA5MSkpXG5gYGAifQ== -->
+<pre class="r"><code>vector_sum_loop &lt;- function(v){
+ result &lt;- 0
+ for(i in v){
+   result &lt;- result + i
+ }
+ result
+}
+vector_sum_loop(c(5, 40, 91))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEzNlxuIn0= -->
+<pre><code>[1] 136</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>You could also think about how to solve this problem recursively. First ask yourself: what’s the base case of finding the sum of a vector? If the vector only contains one element, then the sum is just the value of that element. In the more complex case the vector has more than one element. We can remove the first element of the vector, but then what should we do with the rest of the vector? Thankfully we have a function for computing the sum of all of the elements of a vector because we’re writing that function right now! So we’ll add the value of the first element of the vector to whatever the cumulative sum is of the rest of the vector. The resulting function is illustrated below:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmVjdG9yX3N1bV9yZWMgPC0gZnVuY3Rpb24odil7XG4gaWYobGVuZ3RoKHYpID09IDEpe1xuICAgdlxuIH0gZWxzZSB7XG4gICB2WzFdICsgdmVjdG9yX3N1bV9yZWModlstMV0pXG4gfVxufVxuYGBgIn0= -->
+<pre class="r"><code>vector_sum_rec &lt;- function(v){
+ if(length(v) == 1){
+   v
+ } else {
+   v[1] + vector_sum_rec(v[-1])
+ }
+}</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Ctrl+Alt+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Ctrl+Shift+K</em> to preview the HTML file).</p>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmVjdG9yX3N1bV9yZWMoYyg1LCA0MCwgOTEpKVxuYGBgIn0= -->
+<pre class="r"><code>vector_sum_rec(c(5, 40, 91))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEzNlxuIn0= -->
+<pre><code>[1] 136</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Another useful exercise for thinking about applications for recursion is computing the Fibonacci sequence. The Fibonacci sequence is a sequence of integers that starts: 0, 1, 1, 2, 3, 5, 8 where each proceeding integer is the sum of the previous two integers. This fits into a recursive mental framework very nicely since each subsequent number depends on the previous two numbers.</p>
+<p>Let’s write a function to compute the nth digit of the Fibonacci sequence such that the first number in the sequence is 0, the second number is 1, and then all proceeding numbers are the sum of the n - 1 and the n - 2 Fibonacci number. It is immediately evident that there are three base cases: n must be greater than 0.</p>
+<p>When n is equal to 1, return 0. When n is equal to 2, return 1.</p>
+<p>And then the recursive case: Otherwise return the sum of the n - 1 Fibonacci number and the n - 2 Fibonacci number.</p>
+<p>Let’s turn those words into code:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmliIDwtIGZ1bmN0aW9uKG4pe1xuIHN0b3BpZm5vdChuID4gMClcbiBpZihuID09IDEpe1xuICAgMFxuIH0gZWxzZSBpZihuID09IDIpe1xuICAgMVxuIH0gZWxzZSB7XG4gICBmaWIobiAtIDEpICsgZmliKG4gLSAyKVxuIH1cbn1cbmBgYCJ9 -->
+<pre class="r"><code>fib &lt;- function(n){
+ stopifnot(n &gt; 0)
+ if(n == 1){
+   0
+ } else if(n == 2){
+   1
+ } else {
+   fib(n - 1) + fib(n - 2)
+ }
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFwX2RibCgxOjEyLCBmaWIpXG5gYGAifQ== -->
+<pre class="r"><code>map_dbl(1:12, fib)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAgMCAgMSAgMSAgMiAgMyAgNSAgOCAxMyAyMSAzNCA1NSA4OVxuIn0= -->
+<pre><code> [1]  0  1  1  2  3  5  8 13 21 34 55 89</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Looks like it’s working well! There is one optimization that we could apply here which comes up in recursive programming often. When you execute the function fib(6), within that function you’ll executefib(5) and fib(4). Then within the execution of fib(5),fib(4) will be executed again. An illustration of this phenomenon is below:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJbnNlcnQgUGljdHVyZSBoZXJlXG5gYGAifQ== -->
+<pre class="r"><code># Insert Picture here</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Figure 2.1: Memoization of fib() function</p>
+<p>This duplication of computation slows down your program significantly as you calculate larger numbers in the Fibonacci sequence. Thankfully you can use a technique called memoization in order to speed this computation up. Memoization stores the value of each calculated Fibonacci number in table so that once a number is calculated you can look it up instead of needing to recalculate it! Below is an example of a function that can calculate the first 25 Fibonacci numbers. First we’ll create a very simple table which is just a vector containing 0, 1, and then 23 NAs. First the fib_mem()function will check if the number is in the table, and if it is then it is returned. Otherwise the Fibonacci number is recursively calculated and stored in the table. Notice that we’re using the complex assignment operator &lt;&lt;- in order to modify the table outside the scope of the function. You’ll learn more about the complex operator in the section titled Expressions &amp; Environments.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmliX3RibCA8LSBjKDAsIDEsIHJlcChOQSwgMjMpKVxuZmliX21lbSA8LSBmdW5jdGlvbihuKXtcbiBzdG9waWZub3QobiA+IDApXG4gaWYoIWlzLm5hKGZpYl90Ymxbbl0pKXtcbiAgIGZpYl90Ymxbbl1cbiB9IGVsc2Uge1xuICAgZmliX3RibFtuIC0gMV0gPDwtIGZpYl9tZW0obiAtIDEpXG4gICBmaWJfdGJsW24gLSAyXSA8PC0gZmliX21lbShuIC0gMilcbiAgIGZpYl90YmxbbiAtIDFdICsgZmliX3RibFtuIC0gMl1cbiB9XG59XG5tYXBfZGJsKDE6MTIsIGZpYl9tZW0pXG5gYGAifQ== -->
+<pre class="r"><code>fib_tbl &lt;- c(0, 1, rep(NA, 23))
+fib_mem &lt;- function(n){
+ stopifnot(n &gt; 0)
+ if(!is.na(fib_tbl[n])){
+   fib_tbl[n]
+ } else {
+   fib_tbl[n - 1] &lt;&lt;- fib_mem(n - 1)
+   fib_tbl[n - 2] &lt;&lt;- fib_mem(n - 2)
+   fib_tbl[n - 1] + fib_tbl[n - 2]
+ }
+}
+map_dbl(1:12, fib_mem)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAgMCAgMSAgMSAgMiAgMyAgNSAgOCAxMyAyMSAzNCA1NSA4OVxuIn0= -->
+<pre><code> [1]  0  1  1  2  3  5  8 13 21 34 55 89</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>It works! But is it any faster than the original fib()? Below I’m going to use the microbenchmark package in order assess whether fib()or fib_mem() is faster:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVxdWlyZShwdXJycilcbnJlcXVpcmUobWljcm9iZW5jaG1hcmspXG5yZXF1aXJlKHRpZHlyKVxucmVxdWlyZShtYWdyaXR0cilcbnJlcXVpcmUoZHBseXIpXG5maWJfZGF0YSA8LSBtYXAoMToxMCwgZnVuY3Rpb24oeCl7bWljcm9iZW5jaG1hcmsoZmliKHgpLCB0aW1lcyA9IDEwMCkkdGltZX0pXG5uYW1lcyhmaWJfZGF0YSkgPC0gcGFzdGUwKGxldHRlcnNbMToxMF0sIDE6MTApXG5maWJfZGF0YSA8LSBhcy5kYXRhLmZyYW1lKGZpYl9kYXRhKVxuZmliX2RhdGEgJTw+JVxuICAgZ2F0aGVyKG51bSwgdGltZSkgJT4lXG4gICBncm91cF9ieShudW0pICU+JVxuICAgc3VtbWFyaXNlKG1lZF90aW1lID0gbWVkaWFuKHRpbWUpKVxubWVtb19kYXRhIDwtIG1hcCgxOjEwLCBmdW5jdGlvbih4KXttaWNyb2JlbmNobWFyayhmaWJfbWVtKHgpKSR0aW1lfSlcbm5hbWVzKG1lbW9fZGF0YSkgPC0gcGFzdGUwKGxldHRlcnNbMToxMF0sIDE6MTApXG5tZW1vX2RhdGEgPC0gYXMuZGF0YS5mcmFtZShtZW1vX2RhdGEpXG5tZW1vX2RhdGEgJTw+JVxuICAgZ2F0aGVyKG51bSwgdGltZSkgJT4lXG4gICBncm91cF9ieShudW0pICU+JVxuICAgc3VtbWFyaXNlKG1lZF90aW1lID0gbWVkaWFuKHRpbWUpKVxucGxvdCgxOjEwLCBmaWJfZGF0YSRtZWRfdGltZSwgeGxhYiA9IFwiRmlib25hY2NpIE51bWJlclwiLCB5bGFiID0gXCJNZWRpYW4gVGltZSBcbiAoTmFub3NlY29uZHMpXCIsXG4gICAgcGNoID0gMTgsIGJ0eSA9IFwiblwiLCB4YXh0ID0gXCJuXCIsIHlheHQgPSBcIm5cIilcbmF4aXMoMSwgYXQgPSAxOjEwKVxuYGBgIn0= -->
+<pre class="r"><code>require(purrr)
+require(microbenchmark)
+require(tidyr)
+require(magrittr)
+require(dplyr)
+fib_data &lt;- map(1:10, function(x){microbenchmark(fib(x), times = 100)$time})
+names(fib_data) &lt;- paste0(letters[1:10], 1:10)
+fib_data &lt;- as.data.frame(fib_data)
+fib_data %&lt;&gt;%
+   gather(num, time) %&gt;%
+   group_by(num) %&gt;%
+   summarise(med_time = median(time))
+memo_data &lt;- map(1:10, function(x){microbenchmark(fib_mem(x))$time})
+names(memo_data) &lt;- paste0(letters[1:10], 1:10)
+memo_data &lt;- as.data.frame(memo_data)
+memo_data %&lt;&gt;%
+   gather(num, time) %&gt;%
+   group_by(num) %&gt;%
+   summarise(med_time = median(time))
+plot(1:10, fib_data$med_time, xlab = &quot;Fibonacci Number&quot;, ylab = &quot;Median Time 
+ (Nanoseconds)&quot;,
+    pch = 18, bty = &quot;n&quot;, xaxt = &quot;n&quot;, yaxt = &quot;n&quot;)
+axis(1, at = 1:10)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYXhpcygyLCBhdCA9IHNlcSgwLCAzNTAwMDAsIGJ5ID0gNTAwMDApKVxucG9pbnRzKDE6MTAgKyAuMSwgbWVtb19kYXRhJG1lZF90aW1lLCBjb2wgPSBcImJsdWVcIiwgcGNoID0gMTgpXG5gYGAifQ== -->
+<pre class="r"><code>axis(2, at = seq(0, 350000, by = 50000))
+points(1:10 + .1, memo_data$med_time, col = &quot;blue&quot;, pch = 18)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVnZW5kKDEsIDMwMDAwMCwgYyhcIk5vdCBNZW1vcml6ZWRcIiwgXCJNZW1vaXplZFwiKSwgcGNoID0gMTgsIFxuICAgICAgY29sID0gYyhcImJsYWNrXCIsIFwiYmx1ZVwiKSwgYnR5ID0gXCJuXCIsIGNleCA9IDEsIHkuaW50ZXJzcCA9IDEuNSlcbmBgYCJ9 -->
+<pre class="r"><code>legend(1, 300000, c(&quot;Not Memorized&quot;, &quot;Memoized&quot;), pch = 18, 
+      col = c(&quot;black&quot;, &quot;blue&quot;), bty = &quot;n&quot;, cex = 1, y.intersp = 1.5)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-plot-begin eyJjb25kaXRpb25zIjpbXSwiaGVpZ2h0Ijo0MDEuNzMwNSwic2l6ZV9iZWhhdmlvciI6MCwid2lkdGgiOjY1MH0= -->
+<p><img src="data:image/png;base64,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" /></p>
+<!-- rnb-plot-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Figure 2.2: Speed comparison of memoization As you can see as higher Fibonacci numbers are calculated the time it takes to calculate a number with fib() grows exponentially, while the time it takes to do the same task with fib_mem() stays constant.</p>
+</div>
+<div id="summary" class="section level3">
+<h3>Summary</h3>
+<ul>
+<li>Functional programming is based on lambda calculus.</li>
+<li>This approach concentrates on data, variables, functions, and function applications.</li>
+<li>It’s possible for functions to be able to return other functions.</li>
+<li>The core functional programming concepts can be summarized in the following categories: map, reduce, search, filter, and compose.</li>
+<li>Partial application of functions allows functions to be used like data structures.</li>
+<li>Side effects are difficult to debug although they motivate a huge fraction of computer programming.</li>
+<li>The most important part of understanding recursion is understanding recursion.</li>
+</ul>
+<!-- rnb-text-end -->
+</div>
+</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiANCg0KVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkN0cmwrU2hpZnQrRW50ZXIqLiANCg0KYGBge3J9DQpwbG90KGNhcnMpDQpgYGANCg0KQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkN0cmwrQWx0K0kqLg0KDQpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkN0cmwrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4NCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KIyMgQ291cnNlIE5vdGUgZnJvbSBXZWVrIDIgLSBBZHZhbmNlZCBQcm9ncmFtbWluZyBpbiBSDQojIyMgRnVuY3Rpb25hbCBQcm9ncmFtbWluZw0KRnVuY3Rpb25hbCBwcm9ncmFtbWluZyBpcyBhIHByb2dyYW1taW5nIHBoaWxvc29waHkgYmFzZWQgb25sYW1iZGEgY2FsY3VsdXMuIExhbWJkYSBjYWxjdWx1cyB3YXMgY3JlYXRlZCBieSBBbG9uem8gQ2h1cmNoLCB0aGUgUGhEIGFkdmlzZXIgdG8gQWxhbiBUdXJpbmcgd2hvIGlzIGtub3duIGZvciBoaXMgcm9sZSBpbiBjcmFja2luZyB0aGUgZW5jcnlwdGlvbiBvZiB0aGUgTmF6aeKAmXMgRW5pZ21hIG1hY2hpbmUgZHVyaW5nIFdvcmxkIFdhciBUd28uIEZ1bmN0aW9uYWwgcHJvZ3JhbW1pbmcgaGFzIGJlZW4gYSBwb3B1bGFyIGFwcHJvYWNoIGV2ZXIgc2luY2UgaXQgaGVscGVkIGJyaW5nIGRvd24gdGhlIFRoaXJkIFJlaWNoLg0KRnVuY3Rpb25hbCBwcm9ncmFtbWluZyBjb25jZW50cmF0ZXMgb24gZm91ciBjb25zdHJ1Y3RzOg0KRGF0YSAobnVtYmVycywgc3RyaW5ncywgZXRjKQ0KVmFyaWFibGVzIChmdW5jdGlvbiBhcmd1bWVudHMpDQpGdW5jdGlvbnMNCkZ1bmN0aW9uIEFwcGxpY2F0aW9ucyAoZXZhbHVhdGluZyBmdW5jdGlvbnMgZ2l2ZW4gYXJndW1lbnRzIGFuZC9vciBkYXRhKQ0KQnkgbm93IHlvdeKAmXJlIHVzZWQgdG8gdHJlYXRpbmcgdmFyaWFibGVzIGluc2lkZSBvZiBmdW5jdGlvbnMgYXMgZGF0YSwgd2hldGhlciB0aGV54oCZcmUgdmFsdWVzIGxpa2UgbnVtYmVycyBhbmQgc3RyaW5ncywgb3IgdGhleeKAmXJlIGRhdGEgc3RydWN0dXJlcyBsaWtlIGxpc3RzIGFuZCB2ZWN0b3JzLiBXaXRoIGZ1bmN0aW9uYWwgcHJvZ3JhbW1pbmcgeW91IGNhbiBhbHNvIGNvbnNpZGVyIHRoZSBwb3NzaWJpbGl0eSB0aGF0IHlvdSBjYW4gcHJvdmlkZSBhIGZ1bmN0aW9uIGFzIGFuIGFyZ3VtZW50IHRvIGFub3RoZXIgZnVuY3Rpb24sIGFuZCBhIGZ1bmN0aW9uIGNhbiByZXR1cm4gYW5vdGhlciBmdW5jdGlvbiBhcyBpdHMgcmVzdWx0Lg0KSWYgeW914oCZdmUgdXNlZCBmdW5jdGlvbnMgbGlrZSBzYXBwbHkoKSBvciBhcmdzKCkgdGhlbiBpdOKAmXMgZWFzeSB0byBpbWFnaW5lIGhvdyBmdW5jdGlvbnMgYXMgYXJndW1lbnRzIHRvIG90aGVyIGZ1bmN0aW9ucyBjYW4gYmUgdXNlZC4gSW4gdGhlIGNhc2Ugb2Ygc2FwcGx5KCkgdGhlIHByb3ZpZGVkIGZ1bmN0aW9uIGlzIGFwcGxpZWQgdG8gZGF0YSwgYW5kIGluIHRoZSBjYXNlIG9mIGFyZ3MoKSBpbmZvcm1hdGlvbiBhYm91dCB0aGUgZnVuY3Rpb24gaXMgcmV0dXJuZWQuIFdoYXTigJlzIHJhcmVyIHRvIHNlZSBpcyBhIGZ1bmN0aW9uIHRoYXQgcmV0dXJucyBhIGZ1bmN0aW9uIHdoZW4gaXTigJlzIGV2YWx1YXRlZC4gTGV04oCZcyBsb29rIGF0IGEgc21hbGwgZXhhbXBsZSBvZiBob3cgdGhpcyBjYW4gd29yazoNCmBgYHtyfQ0KYWRkZXJfbWFrZXIgPC0gZnVuY3Rpb24obil7DQogZnVuY3Rpb24oeCl7DQogICBuICsgeA0KIH0NCn0NCmFkZDIgPC0gYWRkZXJfbWFrZXIoMikNCmFkZDMgPC0gYWRkZXJfbWFrZXIoMykNCmFkZDIoNSkNCmFkZDMoNSkNCmBgYA0KSW4gdGhlIGV4YW1wbGUgYWJvdmUgdGhlIGZ1bmN0aW9uIGFkZGVyX21ha2VyKCkgcmV0dXJucyBhIGZ1bmN0aW9uIHdpdGggbm8gbmFtZS4gVGhlIGZ1bmN0aW9uIHJldHVybmVkIGFkZHMgbiB0byBpdHMgb25seSBhcmd1bWVudCB4Lg0KDQoNCiMjI0NvcmUgRnVuY3Rpb25hbCBQcm9ncmFtbWluZyBGdW5jdGlvbiBpbiBSDQoNClRoZXJlIGFyZSBncm91cHMgb2YgZnVuY3Rpb25zIHRoYXQgYXJlIGVzc2VudGlhbCBmb3IgZnVuY3Rpb25hbCBwcm9ncmFtbWluZy4gSW4gbW9zdCBjYXNlcyB0aGV5IHRha2UgYSBmdW5jdGlvbiBhbmQgYSBkYXRhIHN0cnVjdHVyZSBhcyBhcmd1bWVudHMsIGFuZCB0aGF0IGZ1bmN0aW9uIGlzIGFwcGxpZWQgdG8gdGhhdCBkYXRhIHN0cnVjdHVyZSBpbiBzb21lIHdheS4gVGhlIHB1cnJyIHJlcXVpcmUgY29udGFpbnMgbWFueSBvZiB0aGVzZSBmdW5jdGlvbnMgYW5kIHdl4oCZbGwgYmUgdXNpbmcgaXQgdGhyb3VnaG91dCB0aGlzIHNlY3Rpb24uIEZ1bmN0aW9uIHByb2dyYW1taW5nIGlzIGNvbmNlcm5lZCBtb3N0bHkgd2l0aCBsaXN0cyBhbmQgdmVjdG9ycy4gSSBtYXkgcmVmZXIgdG8ganVzdCBsaXN0cyBvciB2ZWN0b3JzLCBidXQgeW91IHNob3VsZCBrbm93IHRoYXQgd2hhdCBhcHBsaWVzIGZvciBsaXN0cyBnZW5lcmFsbHkgYXBwbGllcyBmb3IgdmVjdG9ycyBhbmQgdmljZS12ZXJzYS4NCg0KDQojIyMjIG1hcCgpDQoNClRoZSBtYXAgZmFtaWx5IG9mIGZ1bmN0aW9ucyBhcHBsaWVzIGEgZnVuY3Rpb24gdG8gdGhlIGVsZW1lbnRzIG9mIGEgZGF0YSBzdHJ1Y3R1cmUsIHVzdWFsbHkgYSBsaXN0IG9yIGEgdmVjdG9yLiBUaGUgZnVuY3Rpb24gaXMgZXZhbHVhdGVkIG9uY2UgZm9yIGVhY2ggZWxlbWVudCBvZiB0aGUgdmVjdG9yIHdpdGggdGhlIHZlY3RvciBlbGVtZW50IGFzIHRoZSBmaXJzdCBhcmd1bWVudCB0byB0aGUgZnVuY3Rpb24uIFRoZSByZXR1cm4gdmFsdWUgaXMgdGhlIHNhbWUga2luZCBpZiBkYXRhIHN0cnVjdHVyZSAoYSBsaXN0IG9yIHZlY3RvcikgYnV0IHdpdGggZXZlcnkgZWxlbWVudCByZXBsYWNlZCBieSB0aGUgcmVzdWx0IG9mIHRoZSBmdW5jdGlvbiBiZWluZyBldmFsdWF0ZWQgd2l0aCB0aGUgY29ycmVzcG9uZGluZyBlbGVtZW50IGFzIHRoZSBhcmd1bWVudCB0byB0aGUgZnVuY3Rpb24uIEluIHRoZSBwdXJyciBwYWNrYWdlIHRoZSBtYXAoKSBmdW5jdGlvbiByZXR1cm5zIGEgbGlzdCwgd2hpbGUgdGhlIG1hcF9sZ2woKSwgbWFwX2NocigpLCBhbmQgbWFwX2RibCgpZnVuY3Rpb25zIHJldHVybiB2ZWN0b3JzIG9mIGxvZ2ljYWwgdmFsdWVzLCBzdHJpbmdzLCBvciBudW1iZXJzIHJlc3BlY3RpdmVseS4gTGV04oCZcyB0YWtlIGEgbG9vayBhdCBhIGZldyBleGFtcGxlczoNCmBgYHtyfQ0KcmVxdWlyZShwdXJycikNCm1hcF9jaHIoYyg1LCA0LCAzLCAyLCAxKSwgZnVuY3Rpb24oeCl7DQogYygib25lIiwgInR3byIsICJ0aHJlZSIsICJmb3VyIiwgImZpdmUiKVt4XQ0KfSkNCm1hcF9sZ2woYygxLCAyLCAzLCA0LCA1KSwgZnVuY3Rpb24oeCl7DQogeCA+IDMNCn0pDQpgYGANCg0KDQpUaGluayBhYm91dCBldmFsdWF0aW5nIGVhY2ggZnVuY3Rpb24gYWJvdmUgd2l0aCBqdXN0IG9uZSBvZiB0aGUgYXJndW1lbnRzIGluIHRoZSBzcGVjaWZpZWQgbnVtZXJpYyB2ZWN0b3IsIGFuZCB0aGVuIGNvbWJpbmluZyBhbGwgb2YgdGhvc2UgZnVuY3Rpb24gcmVzdWx0cyBpbnRvIG9uZSB2ZWN0b3IuDQpUaGUgbWFwX2lmKCkgZnVuY3Rpb24gdGFrZXMgYXMgaXRzIGFyZ3VtZW50cyBhIGxpc3Qgb3IgdmVjdG9yIGNvbnRhaW5pbmcgZGF0YSwgYSBwcmVkaWNhdGUgZnVuY3Rpb24sIGFuZCB0aGVuIGEgZnVuY3Rpb24gdG8gYmUgYXBwbGllZC4gQSBwcmVkaWNhdGUgZnVuY3Rpb24gaXMgYSBmdW5jdGlvbiB0aGF0IHJldHVybnMgVFJVRSBvckZBTFNFIA0KZm9yIGVhY2ggZWxlbWVudCBpbiB0aGUgcHJvdmlkZWQgbGlzdCBvciB2ZWN0b3IuIEluIHRoZSBjYXNlIG9mbWFwX2lmKCk6IGlmIHRoZSBwcmVkaWNhdGUgZnVuY3Rpb25zIGV2YWx1YXRlcyB0byBUUlVFLCB0aGVuIHRoZSBmdW5jdGlvbiBpcyBhcHBsaWVkIHRvIHRoZSBjb3JyZXNwb25kaW5nIHZlY3RvciBlbGVtZW50LCANCm93ZXZlciBpZiB0aGUgcHJlZGljYXRlIGZ1bmN0aW9uIGV2YWx1YXRlcyB0byBGQUxTRSB0aGVuIHRoZSBmdW5jdGlvbiBpcyBub3QgYXBwbGllZC4gVGhlIG1hcF9pZigpIGZ1bmN0aW9uIGFsd2F5cyByZXR1cm5zIGEgbGlzdCwgc28gSeKAmW0gcGlwaW5nIHRoZSByZXN1bHQgb2YgbWFwX2lmKCkgdG8gdW5saXN0KCkgc28gaXQgbG9vayBwcmV0dGllcg0KDQoNCmBgYHtyfQ0KbWFwX2lmKDE6NSwgZnVuY3Rpb24oeCl7DQogICAgICAgICAgICAgeCAlJSAyID09IDANCiAgICAgICAgICAgfSwNCiAgICAgICAgICAgZnVuY3Rpb24oeSl7DQogICAgICAgICAgICAgeV4yDQogICAgICAgICAgIH0pICU+JSB1bmxpc3QoKQ0KYGBgDQoNCg0KTm90aWNlIGhvdyBvbmx5IHRoZSBldmVuIG51bWJlcnMgYXJlIHNxdWFyZWQsIHdoaWxlIHRoZSBvZGQgbnVtYmVycyBhcmUgbGVmdCBhbG9uZS4NClRoZSBtYXBfYXQoKSBmdW5jdGlvbiBvbmx5IGFwcGxpZXMgdGhlIHByb3ZpZGVkIGZ1bmN0aW9uIHRvIGVsZW1lbnRzIG9mIGEgdmVjdG9yIHNwZWNpZmllZCBieSB0aGVpciBpbmRleGVzLiBtYXBfYXQoKSBhbHdheXMgcmV0dXJucyBhIGxpc3Qgc28gbGlrZSBiZWZvcmUgSeKAmW0gcGlwaW5nIHRoZSByZXN1bHQgdG8gdW5saXN0KCk6DQoNCmBgYHtyfQ0KbWFwX2F0KHNlcSgxMDAsIDUwMCwgMTAwKSwgYygxLCAzLCA1KSwgZnVuY3Rpb24oeCl7DQogeCAtIDEwDQp9KSAlPiUgdW5saXN0KCkNCmBgYA0KDQoNCkxpa2Ugd2UgZXhwZWN0ZWQgdG8gaGFwcGVuIHRoZSBwcm92aWRpZWQgZnVuY3Rpb24gaXMgb25seSBhcHBsaWVkIHRvIHRoZSBmaXJzdCwgdGhpcmQsIGFuZCBmaWZ0aCBlbGVtZW50IG9mIHRoZSB2ZWN0b3IgcHJvdmlkZWQuDQpJbiBlYWNoIG9mIHRoZSBleGFtcGxlcyBhYm92ZSB3ZSBoYXZlIG9ubHkgYmVlbiBtYXBwaW5nIGEgZnVuY3Rpb24gb3ZlciBvbmUgZGF0YSBzdHJ1Y3R1cmUsIGhvd2V2ZXIgeW91IGNhbiBtYXAgYSBmdW5jdGlvbiBvdmVyIHR3byBkYXRhIHN0cnVjdHVyZXMgd2l0aCB0aGUgbWFwMigpIGZhbWlseSBvZiBmdW5jdGlvbnMuIFRoZSBmaXJzdCB0d28gYXJndW1lbnRzIHNob3VsZCBiZSB0d28gdmVjdG9ycyBvZiB0aGUgc2FtZSBsZW5ndGgsIGZvbGxvd2VkIGJ5IGEgZnVuY3Rpb24gd2hpY2ggd2lsbCBiZSBldmFsdWF0ZWQgd2l0aCBhbiBlbGVtZW50IG9mIHRoZSBmaXJzdCB2ZWN0b3IgYXMgdGhlIGZpcnN0IGFyZ3VtZW50IGFuZCBhbiBlbGVtZW50IG9mIHRoZSBzZWNvbmQgdmVjdG9yIGFzIHRoZSBzZWNvbmQgYXJndW1lbnQuIEZvciBleGFtcGxlOg0KDQpgYGB7cn0NCm1hcDJfY2hyKGxldHRlcnMsIDE6MjYsIHBhc3RlKQ0KYGBgDQoNCg0KVGhlIHBtYXAoKSBmYW1pbHkgb2YgZnVuY3Rpb25zIGlzIHNpbWlsYXIgdG8gbWFwMigpLCBob3dldmVyIGluc3RlYWQgb2YgbWFwcGluZyBhY3Jvc3MgdHdvIHZlY3RvcnMgb3IgbGlzdHMsIHlvdSBjYW4gbWFwIGFjcm9zcyBhbnkgbnVtYmVyIG9mIGxpc3RzLiBUaGUgbGlzdCBhcmd1bWVudCBpcyBhIGxpc3Qgb2YgbGlzdHMgdGhhdCB0aGUgZnVuY3Rpb24gd2lsbCBtYXAgb3ZlciwgZm9sbG93ZWQgYnkgdGhlIGZ1bmN0aW9uIHRoYXQgd2lsbCBhcHBsaWVkOg0KDQpgYGB7cn0NCnBtYXBfY2hyKGxpc3QoDQogbGlzdCgxLCAyLCAzKSwNCiBsaXN0KCJvbmUiLCAidHdvIiwgInRocmVlIiksDQogbGlzdCgidW5vIiwgImRvcyIsICJ0cmVzIikNCiksIHBhc3RlKQ0KYGBgDQoNCk1hcHBpbmcgaXMgYSBwb3dlcmZ1bCB0ZWNobmlxdWUgZm9yIHRoaW5raW5nIGFib3V0IGhvdyB0byBhcHBseSBjb21wdXRhdGlvbmFsIG9wZXJhdGlvbnMgdG8geW91ciBkYXRhLg0KDQoNCg0KIyMjIyByZWR1Y2UoKQ0KDQoNCkxpc3Qgb3IgdmVjdG9yIHJlZHVjdGlvbiBpdGVyYXRpdmVseSBjb21iaW5lcyB0aGUgZmlyc3QgZWxlbWVudCBvZiBhIHZlY3RvciB3aXRoIHRoZSBzZWNvbmQgZWxlbWVudCBvZiBhIHZlY3RvciwgdGhlbiB0aGF0IGNvbWJpbmVkIHJlc3VsdCBpcyBjb21iaW5lZCB3aXRoIHRoZSB0aGlyZCBlbGVtZW50IG9mIHRoZSB2ZWN0b3IsIGFuZCBzbyBvbiB1bnRpbCB0aGUgZW5kIG9mIHRoZSB2ZWN0b3IgaXMgcmVhY2hlZC4gVGhlIGZ1bmN0aW9uIHRvIGJlIGFwcGxpZWQgc2hvdWxkIHRha2UgYXQgbGVhc3QgdHdvIGFyZ3VtZW50cy4gV2hlcmUgbWFwcGluZyByZXR1cm5zIGEgdmVjdG9yIG9yIGEgbGlzdCwgcmVkdWNpbmcgc2hvdWxkIHJldHVybiBhIHNpbmdsZSB2YWx1ZS4gU29tZSBleGFtcGxlcyB1c2luZ3JlZHVjZSgpIGFyZSBpbGx1c3RyYXRlZCBiZWxvdzoNCg0KYGBge3J9DQpyZWR1Y2UoYygxLCAzLCA1LCA3KSwgZnVuY3Rpb24oeCwgeSl7DQogbWVzc2FnZSgieCBpcyAiLCB4KQ0KIG1lc3NhZ2UoInkgaXMgIiwgeSkNCiBtZXNzYWdlKCIiKQ0KIHggKyB5DQp9KQ0KYGBgDQoNCg0KT24gdGhlIGZpcnN0IGl0ZXJhdGlvbiB4IGhhcyB0aGUgdmFsdWUgMSBhbmQgeSBoYXMgdGhlIHZhbHVlIDMsIHRoZW4gdGhlIHR3byB2YWx1ZXMgYXJlIGNvbWJpbmVkICh0aGV54oCZcmUgYWRkZWQgdG9nZXRoZXIpLiBPbiB0aGUgc2Vjb25kIGl0ZXJhdGlvbiB4IGhhcyB0aGUgdmFsdWUgb2YgdGhlIHJlc3VsdCBmcm9tIHRoZSBmaXJzdCBpdGVyYXRpb24gKDQpIGFuZCB5IGhhcyB0aGUgdmFsdWUgb2YgdGhlIHRoaXJkIGVsZW1lbnQgaW4gdGhlIHByb3ZpZGVkIG51bWVyaWMgdmVjdG9yICg1KS4gVGhpcyBwcm9jZXNzIGlzIHJlcGVhdGVkIGZvciBlYWNoIGl0ZXJhdGlvbi4gSGVyZeKAmXMgYSBzaW1pbGFyIGV4YW1wbGUgdXNpbmcgc3RyaW5nIGRhdGE6DQoNCmBgYHtyfQ0KcmVkdWNlKGxldHRlcnNbMTo0XSwgZnVuY3Rpb24oeCwgeSl7DQogbWVzc2FnZSgieCBpcyAiLCB4KQ0KIG1lc3NhZ2UoInkgaXMgIiwgeSkNCiBtZXNzYWdlKCIiKQ0KIHBhc3RlMCh4LCB5KQ0KfSkNCmBgYA0KDQoNCkJ5IGRlZmF1bHQgcmVkdWNlKCkgc3RhcnRzIHdpdGggdGhlIGZpcnN0IGVsZW1lbnQgb2YgYSB2ZWN0b3IgYW5kIHRoZW4gdGhlIHNlY29uZCBlbGVtZW50IGFuZCBzbyBvbi4gSW4gY29udHJhc3QgdGhlIHJlZHVjZV9yaWdodCgpZnVuY3Rpb24gc3RhcnRzIHdpdGggdGhlIGxhc3QgZWxlbWVudCBvZiBhIHZlY3RvciBhbmQgdGhlbiBwcm9jZWVkcyB0byB0aGUgc2Vjb25kIHRvIGxhc3QgZWxlbWVudCBvZiBhIHZlY3RvciBhbmQgc28gb246DQoNCmBgYHtyfQ0KcmVkdWNlX3JpZ2h0KGxldHRlcnNbMTo0XSwgZnVuY3Rpb24oeCwgeSl7DQogbWVzc2FnZSgieCBpcyAiLCB4KQ0KIG1lc3NhZ2UoInkgaXMgIiwgeSkNCiBtZXNzYWdlKCIiKQ0KIHBhc3RlMCh4LCB5KQ0KfSkNCmBgYA0KDQoNCg0KDQojIyMjIHNlYXJjaCgpDQoNCllvdSBjYW4gc2VhcmNoIGZvciBzcGVjaWZpYyBlbGVtZW50cyBvZiBhIHZlY3RvciB1c2luZyB0aGVjb250YWlucygpIGFuZCBkZXRlY3QoKSBmdW5jdGlvbnMuIGNvbnRhaW5zKCkgd2lsbCByZXR1cm5UUlVFIGlmIGEgc3BlY2lmaWVkIGVsZW1lbnQgaXMgcHJlc2VudCBpbiBhIHZlY3Rvciwgb3RoZXJ3aXNlIGl0IHJldHVybnNGQUxTRToNCg0KYGBge3J9DQpjb250YWlucyhsZXR0ZXJzLCAiYSIpDQpjb250YWlucyhsZXR0ZXJzLCAiQSIpDQpgYGANCg0KVGhlIGRldGVjdCgpIGZ1bmN0aW9uIHRha2VzIGEgdmVjdG9yIGFuZCBhIHByZWRpY2F0ZSBmdW5jdGlvbiBhcyBhcmd1bWVudHMgYW5kIGl0IHJldHVybnMgdGhlIGZpcnN0IGVsZW1lbnQgb2YgdGhlIHZlY3RvciBmb3Igd2hpY2ggdGhlIHByZWRpY2F0ZSBmdW5jdGlvbiByZXR1cm5zIFRSVUU6DQpgYGB7cn0NCmRldGVjdCgyMDo0MCwgZnVuY3Rpb24oeCl7DQogeCA+IDIyICYmIHggJSUgMiA9PSAwDQp9KQ0KYGBgDQoNClRoZSBkZXRlY3RfaW5kZXgoKSBmdW5jdGlvbiB0YWtlcyB0aGUgc2FtZSBhcmd1bWVudHMsIGhvd2V2ZXIgaXQgcmV0dXJucyB0aGUgaW5kZXggb2YgdGhlIHByb3ZpZGVkIHZlY3RvciB3aGljaCBjb250YWlucyB0aGUgZmlyc3QgZWxlbWVudCB0aGF0IHNhdGlzZmllcyB0aGUgcHJlZGljYXRlIGZ1bmN0aW9uOg0KYGBge3J9DQpkZXRlY3RfaW5kZXgoMjA6NDAsIGZ1bmN0aW9uKHgpew0KIHggPiAyMiAmJiB4ICUlIDIgPT0gMA0KfSkNCmBgYA0KDQoNCg0KIyMjIyBGaWx0ZXINCg0KVGhlIGdyb3VwIG9mIGZ1bmN0aW9ucyB0aGF0IGluY2x1ZGVzIGtlZXAoKSwgZGlzY2FyZCgpLGV2ZXJ5KCksIGFuZCBzb21lKCkgYXJlIGtub3duIGFzIGZpbHRlciBmdW5jdGlvbnMuIEVhY2ggb2YgdGhlc2UgZnVuY3Rpb25zIHRha2VzIGEgdmVjdG9yIGFuZCBhIHByZWRpY2F0ZSBmdW5jdGlvbi4gRm9yIGtlZXAoKSBvbmx5IHRoZSBlbGVtZW50cyBvZiB0aGUgdmVjdG9yIHRoYXQgc2F0aXNmeSB0aGUgcHJlZGljYXRlIGZ1bmN0aW9uIGFyZSByZXR1cm5lZCB3aGlsZSBhbGwgb3RoZXIgZWxlbWVudHMgYXJlIHJlbW92ZWQ6DQoNCmBgYHtyfQ0Ka2VlcCgxOjIwLCBmdW5jdGlvbih4KXsNCiB4ICUlIDIgPT0gMA0KfSkNCmBgYA0KDQpUaGUgZGlzY2FyZCgpIGZ1bmN0aW9uIHdvcmtzIHNpbWlsYXJseSwgaXQgb25seSByZXR1cm5zIGVsZW1lbnRzIHRoYXQgZG9u4oCZdCBzYXRpc2Z5IHRoZSBwcmVkaWNhdGUgZnVuY3Rpb246DQoNCmBgYHtyfQ0KZGlzY2FyZCgxOjIwLCBmdW5jdGlvbih4KXsNCiB4ICUlIDIgPT0gMA0KfSkNCmBgYA0KDQpUaGUgZXZlcnkoKSBmdW5jdGlvbiByZXR1cm5zIFRSVUUgb25seSBpZiBldmVyeSBlbGVtZW50IGluIHRoZSB2ZWN0b3Igc2F0aXNmaWVzIHRoZSBwcmVkaWNhdGUgZnVuY3Rpb24sIHdoaWxlIHRoZSBzb21lKCkgZnVuY3Rpb24gcmV0dXJucyBUUlVFIGlmIGF0IGxlYXN0IG9uZSBlbGVtZW50IGluIHRoZSB2ZWN0b3Igc2F0aXNmaWVzIHRoZSBwcmVkaWNhdGUgZnVuY3Rpb246DQoNCmBgYHtyfQ0KZXZlcnkoMToyMCwgZnVuY3Rpb24oeCl7DQogeCAlJSAyID09IDANCn0pDQpzb21lKDE6MjAsIGZ1bmN0aW9uKHgpew0KIHggJSUgMiA9PSAwDQp9KQ0KYGBgDQoNCg0KIyMjIyBDb21wb3NlDQoNCkZpbmFsbHksIHRoZSBjb21wb3NlKCkgZnVuY3Rpb24gY29tYmluZXMgYW55IG51bWJlciBvZiBmdW5jdGlvbnMgaW50byBvbmUgZnVuY3Rpb246DQpgYGB7cn0NCm5fdW5pcXVlIDwtIGNvbXBvc2UobGVuZ3RoLCB1bmlxdWUpDQojIFRoZSBjb21wb3NpdGlvbiBhYm92ZSBpcyB0aGUgc2FtZSBhczoNCiMgbl91bmlxdWUgPC0gZnVuY3Rpb24oeCl7DQojICAgbGVuZ3RoKHVuaXF1ZSh4KSkNCiMgfQ0KcmVwKDE6NSwgMTo1KQ0KDQpuX3VuaXF1ZShyZXAoMTo1LCAxOjUpKQ0KYGBgDQoNCg0KDQoNCiMjIyMgUGFydGlhbCBBcHBsaWNhdGlvbg0KDQpQYXJ0aWFsIGFwcGxpY2F0aW9uIG9mIGZ1bmN0aW9ucyBjYW4gYWxsb3cgZnVuY3Rpb25zIHRvIGJlaGF2ZSBhIGxpdHRsZSBsaWtlIGRhdGEgc3RydWN0dXJlcy4gVXNpbmcgdGhlIHBhcnRpYWwoKSBmdW5jdGlvbiBmcm9tIHRoZSBwdXJycnBhY2thZ2UgeW91IGNhbiBzcGVjaWZ5IHNvbWUgb2YgdGhlIGFyZ3VtZW50cyBvZiBhIGZ1bmN0aW9uLCBhbmQgdGhlbiBwYXJ0aWFsKCkgd2lsbCByZXR1cm4gYSBmdW5jdGlvbiB0aGF0IG9ubHkgdGFrZXMgdGhlIHVuc3BlY2lmaWVkIGFyZ3VtZW50cy4gTGV04oCZcyB0YWtlIGEgbG9vayBhdCBhIHNpbXBsZSBleGFtcGxlOg0KDQoNCmBgYHtyfQ0KcmVxdWlyZShwdXJycikNCm11bHRfdGhyZWVfbiA8LSBmdW5jdGlvbih4LCB5LCB6KXsNCiB4ICogeSAqIHoNCn0NCm11bHRfYnlfMTUgPC0gcGFydGlhbChtdWx0X3RocmVlX24sIHggPSAzLCB5ID0gNSkNCm11bHRfYnlfMTUoeiA9IDQpDQpgYGANCkJ5IHVzaW5nIHBhcnRpYWwgYXBwbGljYXRpb24geW91IGNhbiBiaW5kIHNvbWUgZGF0YSB0byB0aGUgYXJndW1lbnRzIG9mIGEgZnVuY3Rpb24gYmVmb3JlIHVzaW5nIHRoYXQgZnVuY3Rpb24gZWxzZXdoZXJlLg0KDQoNCg0KIyMjIyBTaWRlIEVmZmVjdHMNCg0KU2lkZSBlZmZlY3RzIG9mIGZ1bmN0aW9ucyBvY2N1ciB3aGVuZXZlciBhIGZ1bmN0aW9uIGludGVyYWN0cyB3aXRoIHRoZSDigJxvdXRzaWRlIHdvcmxk4oCdIOKAkyByZWFkaW5nIG9yIHdyaXRpbmcgZGF0YSwgcHJpbnRpbmcgdG8gdGhlIGNvbnNvbGUsIGFuZCBkaXNwbGF5aW5nIGEgZ3JhcGggYXJlIGFsbCBzaWRlIGVmZmVjdHMuIFRoZSByZXN1bHRzIG9mIHNpZGUgZWZmZWN0cyBhcmUgb25lIG9mIHRoZSBtYWluIG1vdGl2YXRpb25zIGZvciB3cml0aW5nIGNvZGUgaW4gdGhlIGZpcnN0IHBsYWNlISBTaWRlIGVmZmVjdHMgY2FuIGJlIHRyaWNreSB0byBoYW5kbGUgdGhvdWdoLCBzaW5jZSB0aGUgb3JkZXIgaW4gd2hpY2ggZnVuY3Rpb25zIHdpdGggc2lkZSBlZmZlY3RzIGFyZSBleGVjdXRlZCBvZnRlbiBtYXR0ZXJzIGFuZCB0aGVyZSBhcmUgdmFyaWFibGVzIHRoYXQgYXJlIGV4dGVybmFsIHRvIHRoZSBwcm9ncmFtICh0aGUgcmVsYXRpdmUgbG9jYXRpb24gb2Ygc29tZSBkYXRhKS4gSWYgeW91IHdhbnQgdG8gZXZhbHVhdGUgYSBmdW5jdGlvbiBhY3Jvc3MgYSBkYXRhIHN0cnVjdHVyZSB5b3Ugc2hvdWxkIHVzZSB0aGUgd2FsaygpIGZ1bmN0aW9uIGZyb20gcHVycnIuIEhlcmXigJlzIGEgc2ltcGxlIGV4YW1wbGU6DQoNCg0KIyMjIFJlY3Vyc2lvbg0KDQpSZWN1cnNpb24gaXMgdmVyeSBwb3dlcmZ1bCB0b29sLCBib3RoIG1lbnRhbGx5IGFuZCBpbiBzb2Z0d2FyZSBkZXZlbG9wbWVudCwgZm9yIHNvbHZpbmcgcHJvYmxlbXMuIFJlY3Vyc2l2ZSBmdW5jdGlvbnMgaGF2ZSB0d28gbWFpbiBwYXJ0czogYSBmZXcgZWFzeSB0byBzb2x2ZSBwcm9ibGVtcyBjYWxsZWQg4oCcYmFzZSBjYXNlcyzigJ0gYW5kIHRoZW4gYSBjYXNlIGZvciBtb3JlIGNvbXBsaWNhdGVkIHByb2JsZW1zIHdoZXJlIHRoZSBmdW5jdGlvbiBpcyBjYWxsZWQgaW5zaWRlIG9mIGl0c2VsZi4gVGhlIGNlbnRyYWwgcGhpbG9zb3BoeSBvZiByZWN1cnNpdmUgcHJvZ3JhbW1pbmcgaXMgdGhhdCBwcm9ibGVtcyBjYW4gYmUgYnJva2VuIGRvd24gaW50byBzaW1wbGVyIHBhcnRzLCBhbmQgdGhlbiBjb21iaW5pbmcgdGhvc2Ugc2ltcGxlIGFuc3dlcnMgcmVzdWx0cyBpbiB0aGUgYW5zd2VyIHRvIGEgY29tcGxleCBwcm9ibGVtLg0KSW1hZ2luZSB5b3Ugd2FudGVkIHRvIHdyaXRlIGEgZnVuY3Rpb24gdGhhdCBhZGRzIHRvZ2V0aGVyIGFsbCBvZiB0aGUgbnVtYmVycyBpbiBhIHZlY3Rvci4gWW91IGNvdWxkIG9mIGNvdXJzZSBhY2NvbXBsaXNoIHRoaXMgd2l0aCBhIGxvb3A6DQoNCmBgYHtyfQ0KdmVjdG9yX3N1bV9sb29wIDwtIGZ1bmN0aW9uKHYpew0KIHJlc3VsdCA8LSAwDQogZm9yKGkgaW4gdil7DQogICByZXN1bHQgPC0gcmVzdWx0ICsgaQ0KIH0NCiByZXN1bHQNCn0NCnZlY3Rvcl9zdW1fbG9vcChjKDUsIDQwLCA5MSkpDQpgYGANCg0KDQpZb3UgY291bGQgYWxzbyB0aGluayBhYm91dCBob3cgdG8gc29sdmUgdGhpcyBwcm9ibGVtIHJlY3Vyc2l2ZWx5LiBGaXJzdCBhc2sgeW91cnNlbGY6IHdoYXTigJlzIHRoZSBiYXNlIGNhc2Ugb2YgZmluZGluZyB0aGUgc3VtIG9mIGEgdmVjdG9yPyBJZiB0aGUgdmVjdG9yIG9ubHkgY29udGFpbnMgb25lIGVsZW1lbnQsIHRoZW4gdGhlIHN1bSBpcyBqdXN0IHRoZSB2YWx1ZSBvZiB0aGF0IGVsZW1lbnQuIEluIHRoZSBtb3JlIGNvbXBsZXggY2FzZSB0aGUgdmVjdG9yIGhhcyBtb3JlIHRoYW4gb25lIGVsZW1lbnQuIFdlIGNhbiByZW1vdmUgdGhlIGZpcnN0IGVsZW1lbnQgb2YgdGhlIHZlY3RvciwgYnV0IHRoZW4gd2hhdCBzaG91bGQgd2UgZG8gd2l0aCB0aGUgcmVzdCBvZiB0aGUgdmVjdG9yPyBUaGFua2Z1bGx5IHdlIGhhdmUgYSBmdW5jdGlvbiBmb3IgY29tcHV0aW5nIHRoZSBzdW0gb2YgYWxsIG9mIHRoZSBlbGVtZW50cyBvZiBhIHZlY3RvciBiZWNhdXNlIHdl4oCZcmUgd3JpdGluZyB0aGF0IGZ1bmN0aW9uIHJpZ2h0IG5vdyEgU28gd2XigJlsbCBhZGQgdGhlIHZhbHVlIG9mIHRoZSBmaXJzdCBlbGVtZW50IG9mIHRoZSB2ZWN0b3IgdG8gd2hhdGV2ZXIgdGhlIGN1bXVsYXRpdmUgc3VtIGlzIG9mIHRoZSByZXN0IG9mIHRoZSB2ZWN0b3IuIFRoZSByZXN1bHRpbmcgZnVuY3Rpb24gaXMgaWxsdXN0cmF0ZWQgYmVsb3c6DQoNCg0KYGBge3J9DQp2ZWN0b3Jfc3VtX3JlYyA8LSBmdW5jdGlvbih2KXsNCiBpZihsZW5ndGgodikgPT0gMSl7DQogICB2DQogfSBlbHNlIHsNCiAgIHZbMV0gKyB2ZWN0b3Jfc3VtX3JlYyh2Wy0xXSkNCiB9DQp9DQpgYGANCg0KDQpgYGB7cn0NCnZlY3Rvcl9zdW1fcmVjKGMoNSwgNDAsIDkxKSkNCmBgYA0KDQpBbm90aGVyIHVzZWZ1bCBleGVyY2lzZSBmb3IgdGhpbmtpbmcgYWJvdXQgYXBwbGljYXRpb25zIGZvciByZWN1cnNpb24gaXMgY29tcHV0aW5nIHRoZSBGaWJvbmFjY2kgc2VxdWVuY2UuIFRoZSBGaWJvbmFjY2kgc2VxdWVuY2UgaXMgYSBzZXF1ZW5jZSBvZiBpbnRlZ2VycyB0aGF0IHN0YXJ0czogMCwgMSwgMSwgMiwgMywgNSwgOCB3aGVyZSBlYWNoIHByb2NlZWRpbmcgaW50ZWdlciBpcyB0aGUgc3VtIG9mIHRoZSBwcmV2aW91cyB0d28gaW50ZWdlcnMuIFRoaXMgZml0cyBpbnRvIGEgcmVjdXJzaXZlIG1lbnRhbCBmcmFtZXdvcmsgdmVyeSBuaWNlbHkgc2luY2UgZWFjaCBzdWJzZXF1ZW50IG51bWJlciBkZXBlbmRzIG9uIHRoZSBwcmV2aW91cyB0d28gbnVtYmVycy4NCg0KDQpMZXTigJlzIHdyaXRlIGEgZnVuY3Rpb24gdG8gY29tcHV0ZSB0aGUgbnRoIGRpZ2l0IG9mIHRoZSBGaWJvbmFjY2kgc2VxdWVuY2Ugc3VjaCB0aGF0IHRoZSBmaXJzdCBudW1iZXIgaW4gdGhlIHNlcXVlbmNlIGlzIDAsIHRoZSBzZWNvbmQgbnVtYmVyIGlzIDEsIGFuZCB0aGVuIGFsbCBwcm9jZWVkaW5nIG51bWJlcnMgYXJlIHRoZSBzdW0gb2YgdGhlIG4gLSAxIGFuZCB0aGUgbiAtIDIgRmlib25hY2NpIG51bWJlci4gSXQgaXMgaW1tZWRpYXRlbHkgZXZpZGVudCB0aGF0IHRoZXJlIGFyZSB0aHJlZSBiYXNlIGNhc2VzOg0KbiBtdXN0IGJlIGdyZWF0ZXIgdGhhbiAwLg0KDQpXaGVuIG4gaXMgZXF1YWwgdG8gMSwgcmV0dXJuIDAuDQpXaGVuIG4gaXMgZXF1YWwgdG8gMiwgcmV0dXJuIDEuDQoNCkFuZCB0aGVuIHRoZSByZWN1cnNpdmUgY2FzZToNCk90aGVyd2lzZSByZXR1cm4gdGhlIHN1bSBvZiB0aGUgbiAtIDEgRmlib25hY2NpIG51bWJlciBhbmQgdGhlIG4gLSAyIEZpYm9uYWNjaSBudW1iZXIuDQoNCkxldOKAmXMgdHVybiB0aG9zZSB3b3JkcyBpbnRvIGNvZGU6DQpgYGB7cn0NCmZpYiA8LSBmdW5jdGlvbihuKXsNCiBzdG9waWZub3QobiA+IDApDQogaWYobiA9PSAxKXsNCiAgIDANCiB9IGVsc2UgaWYobiA9PSAyKXsNCiAgIDENCiB9IGVsc2Ugew0KICAgZmliKG4gLSAxKSArIGZpYihuIC0gMikNCiB9DQp9DQpgYGANCg0KDQpgYGB7cn0NCm1hcF9kYmwoMToxMiwgZmliKQ0KYGBgDQoNCg0KTG9va3MgbGlrZSBpdOKAmXMgd29ya2luZyB3ZWxsISBUaGVyZSBpcyBvbmUgb3B0aW1pemF0aW9uIHRoYXQgd2UgY291bGQgYXBwbHkgaGVyZSB3aGljaCBjb21lcyB1cCBpbiByZWN1cnNpdmUgcHJvZ3JhbW1pbmcgb2Z0ZW4uIFdoZW4geW91IGV4ZWN1dGUgdGhlIGZ1bmN0aW9uIGZpYig2KSwgd2l0aGluIHRoYXQgZnVuY3Rpb24geW914oCZbGwgZXhlY3V0ZWZpYig1KSBhbmQgZmliKDQpLiBUaGVuIHdpdGhpbiB0aGUgZXhlY3V0aW9uIG9mIGZpYig1KSxmaWIoNCkgd2lsbCBiZSBleGVjdXRlZCBhZ2Fpbi4gQW4gaWxsdXN0cmF0aW9uIG9mIHRoaXMgcGhlbm9tZW5vbiBpcyBiZWxvdzoNCg0KYGBge3J9DQojIEluc2VydCBQaWN0dXJlIGhlcmUNCmBgYA0KDQoNCkZpZ3VyZSAyLjE6IE1lbW9pemF0aW9uIG9mIGZpYigpIGZ1bmN0aW9uDQoNClRoaXMgZHVwbGljYXRpb24gb2YgY29tcHV0YXRpb24gc2xvd3MgZG93biB5b3VyIHByb2dyYW0gc2lnbmlmaWNhbnRseSBhcyB5b3UgY2FsY3VsYXRlIGxhcmdlciBudW1iZXJzIGluIHRoZSBGaWJvbmFjY2kgc2VxdWVuY2UuIFRoYW5rZnVsbHkgeW91IGNhbiB1c2UgYSB0ZWNobmlxdWUgY2FsbGVkIG1lbW9pemF0aW9uIGluIG9yZGVyIHRvIHNwZWVkIHRoaXMgY29tcHV0YXRpb24gdXAuIE1lbW9pemF0aW9uIHN0b3JlcyB0aGUgdmFsdWUgb2YgZWFjaCBjYWxjdWxhdGVkIEZpYm9uYWNjaSBudW1iZXIgaW4gdGFibGUgc28gdGhhdCBvbmNlIGEgbnVtYmVyIGlzIGNhbGN1bGF0ZWQgeW91IGNhbiBsb29rIGl0IHVwIGluc3RlYWQgb2YgbmVlZGluZyB0byByZWNhbGN1bGF0ZSBpdCENCkJlbG93IGlzIGFuIGV4YW1wbGUgb2YgYSBmdW5jdGlvbiB0aGF0IGNhbiBjYWxjdWxhdGUgdGhlIGZpcnN0IDI1IEZpYm9uYWNjaSBudW1iZXJzLiBGaXJzdCB3ZeKAmWxsIGNyZWF0ZSBhIHZlcnkgc2ltcGxlIHRhYmxlIHdoaWNoIGlzIGp1c3QgYSB2ZWN0b3IgY29udGFpbmluZyAwLCAxLCBhbmQgdGhlbiAyMyBOQXMuIEZpcnN0IHRoZSBmaWJfbWVtKClmdW5jdGlvbiB3aWxsIGNoZWNrIGlmIHRoZSBudW1iZXIgaXMgaW4gdGhlIHRhYmxlLCBhbmQgaWYgaXQgaXMgdGhlbiBpdCBpcyByZXR1cm5lZC4gT3RoZXJ3aXNlIHRoZSBGaWJvbmFjY2kgbnVtYmVyIGlzIHJlY3Vyc2l2ZWx5IGNhbGN1bGF0ZWQgYW5kIHN0b3JlZCBpbiB0aGUgdGFibGUuIE5vdGljZSB0aGF0IHdl4oCZcmUgdXNpbmcgdGhlIGNvbXBsZXggYXNzaWdubWVudCBvcGVyYXRvciA8PC0gaW4gb3JkZXIgdG8gbW9kaWZ5IHRoZSB0YWJsZSBvdXRzaWRlIHRoZSBzY29wZSBvZiB0aGUgZnVuY3Rpb24uIFlvdeKAmWxsIGxlYXJuIG1vcmUgYWJvdXQgdGhlIGNvbXBsZXggb3BlcmF0b3IgaW4gdGhlIHNlY3Rpb24gdGl0bGVkIEV4cHJlc3Npb25zICYgRW52aXJvbm1lbnRzLg0KDQpgYGB7cn0NCmZpYl90YmwgPC0gYygwLCAxLCByZXAoTkEsIDIzKSkNCmZpYl9tZW0gPC0gZnVuY3Rpb24obil7DQogc3RvcGlmbm90KG4gPiAwKQ0KDQogaWYoIWlzLm5hKGZpYl90Ymxbbl0pKXsNCiAgIGZpYl90Ymxbbl0NCiB9IGVsc2Ugew0KICAgZmliX3RibFtuIC0gMV0gPDwtIGZpYl9tZW0obiAtIDEpDQogICBmaWJfdGJsW24gLSAyXSA8PC0gZmliX21lbShuIC0gMikNCiAgIGZpYl90YmxbbiAtIDFdICsgZmliX3RibFtuIC0gMl0NCiB9DQp9DQptYXBfZGJsKDE6MTIsIGZpYl9tZW0pDQpgYGANCg0KDQpJdCB3b3JrcyEgQnV0IGlzIGl0IGFueSBmYXN0ZXIgdGhhbiB0aGUgb3JpZ2luYWwgZmliKCk/IEJlbG93IEnigJltIGdvaW5nIHRvIHVzZSB0aGUgbWljcm9iZW5jaG1hcmsgcGFja2FnZSBpbiBvcmRlciBhc3Nlc3Mgd2hldGhlciBmaWIoKW9yIGZpYl9tZW0oKSBpcyBmYXN0ZXI6DQpgYGB7cn0NCnJlcXVpcmUocHVycnIpDQpyZXF1aXJlKG1pY3JvYmVuY2htYXJrKQ0KcmVxdWlyZSh0aWR5cikNCnJlcXVpcmUobWFncml0dHIpDQpyZXF1aXJlKGRwbHlyKQ0KZmliX2RhdGEgPC0gbWFwKDE6MTAsIGZ1bmN0aW9uKHgpe21pY3JvYmVuY2htYXJrKGZpYih4KSwgdGltZXMgPSAxMDApJHRpbWV9KQ0KbmFtZXMoZmliX2RhdGEpIDwtIHBhc3RlMChsZXR0ZXJzWzE6MTBdLCAxOjEwKQ0KZmliX2RhdGEgPC0gYXMuZGF0YS5mcmFtZShmaWJfZGF0YSkNCmZpYl9kYXRhICU8PiUNCiAgIGdhdGhlcihudW0sIHRpbWUpICU+JQ0KICAgZ3JvdXBfYnkobnVtKSAlPiUNCiAgIHN1bW1hcmlzZShtZWRfdGltZSA9IG1lZGlhbih0aW1lKSkNCm1lbW9fZGF0YSA8LSBtYXAoMToxMCwgZnVuY3Rpb24oeCl7bWljcm9iZW5jaG1hcmsoZmliX21lbSh4KSkkdGltZX0pDQpuYW1lcyhtZW1vX2RhdGEpIDwtIHBhc3RlMChsZXR0ZXJzWzE6MTBdLCAxOjEwKQ0KbWVtb19kYXRhIDwtIGFzLmRhdGEuZnJhbWUobWVtb19kYXRhKQ0KbWVtb19kYXRhICU8PiUNCiAgIGdhdGhlcihudW0sIHRpbWUpICU+JQ0KICAgZ3JvdXBfYnkobnVtKSAlPiUNCiAgIHN1bW1hcmlzZShtZWRfdGltZSA9IG1lZGlhbih0aW1lKSkNCnBsb3QoMToxMCwgZmliX2RhdGEkbWVkX3RpbWUsIHhsYWIgPSAiRmlib25hY2NpIE51bWJlciIsIHlsYWIgPSAiTWVkaWFuIFRpbWUgDQogKE5hbm9zZWNvbmRzKSIsDQogICAgcGNoID0gMTgsIGJ0eSA9ICJuIiwgeGF4dCA9ICJuIiwgeWF4dCA9ICJuIikNCmF4aXMoMSwgYXQgPSAxOjEwKQ0KYXhpcygyLCBhdCA9IHNlcSgwLCAzNTAwMDAsIGJ5ID0gNTAwMDApKQ0KcG9pbnRzKDE6MTAgKyAuMSwgbWVtb19kYXRhJG1lZF90aW1lLCBjb2wgPSAiYmx1ZSIsIHBjaCA9IDE4KQ0KbGVnZW5kKDEsIDMwMDAwMCwgYygiTm90IE1lbW9yaXplZCIsICJNZW1vaXplZCIpLCBwY2ggPSAxOCwgDQogICAgICBjb2wgPSBjKCJibGFjayIsICJibHVlIiksIGJ0eSA9ICJuIiwgY2V4ID0gMSwgeS5pbnRlcnNwID0gMS41KQ0KYGBgDQoNCkZpZ3VyZSAyLjI6IFNwZWVkIGNvbXBhcmlzb24gb2YgbWVtb2l6YXRpb24NCkFzIHlvdSBjYW4gc2VlIGFzIGhpZ2hlciBGaWJvbmFjY2kgbnVtYmVycyBhcmUgY2FsY3VsYXRlZCB0aGUgdGltZSBpdCB0YWtlcyB0byBjYWxjdWxhdGUgYSBudW1iZXIgd2l0aCBmaWIoKSBncm93cyBleHBvbmVudGlhbGx5LCB3aGlsZSB0aGUgdGltZSBpdCB0YWtlcyB0byBkbyB0aGUgc2FtZSB0YXNrIHdpdGggZmliX21lbSgpIHN0YXlzIGNvbnN0YW50Lg0KDQoNCg0KIyMjIFN1bW1hcnkNCg0KLSBGdW5jdGlvbmFsIHByb2dyYW1taW5nIGlzIGJhc2VkIG9uIGxhbWJkYSBjYWxjdWx1cy4NCi0gVGhpcyBhcHByb2FjaCBjb25jZW50cmF0ZXMgb24gZGF0YSwgdmFyaWFibGVzLCBmdW5jdGlvbnMsIGFuZCBmdW5jdGlvbiBhcHBsaWNhdGlvbnMuDQotIEl04oCZcyBwb3NzaWJsZSBmb3IgZnVuY3Rpb25zIHRvIGJlIGFibGUgdG8gcmV0dXJuIG90aGVyIGZ1bmN0aW9ucy4NCi0gVGhlIGNvcmUgZnVuY3Rpb25hbCBwcm9ncmFtbWluZyBjb25jZXB0cyBjYW4gYmUgc3VtbWFyaXplZCBpbiB0aGUgZm9sbG93aW5nIGNhdGVnb3JpZXM6IG1hcCwgcmVkdWNlLCBzZWFyY2gsIGZpbHRlciwgYW5kIGNvbXBvc2UuDQotIFBhcnRpYWwgYXBwbGljYXRpb24gb2YgZnVuY3Rpb25zIGFsbG93cyBmdW5jdGlvbnMgdG8gYmUgdXNlZCBsaWtlIGRhdGEgc3RydWN0dXJlcy4NCi0gU2lkZSBlZmZlY3RzIGFyZSBkaWZmaWN1bHQgdG8gZGVidWcgYWx0aG91Z2ggdGhleSBtb3RpdmF0ZSBhIGh1Z2UgZnJhY3Rpb24gb2YgY29tcHV0ZXIgcHJvZ3JhbW1pbmcuDQotIFRoZSBtb3N0IGltcG9ydGFudCBwYXJ0IG9mIHVuZGVyc3RhbmRpbmcgcmVjdXJzaW9uIGlzIHVuZGVyc3RhbmRpbmcgcmVjdXJzaW9uLg0KDQo=</div>
 
 
 
