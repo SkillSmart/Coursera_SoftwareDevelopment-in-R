@@ -1,0 +1,266 @@
+---
+title: "R Notebook"
+output: html_notebook
+root.dir: "D:/AAA_ProgrammingFiles/AAA_Learning/Coursera_SoftwareDevInR/AdvR_Programming"
+---
+## CourseNotes - Week1 Readings
+
+This file contains all the code samples from the readings in Week 1
+
+The development of a functions in R represents the next level of R programming, beyond executing commands at the command line and writing scripts containing multiple R expressions. When writing R functions, one has to consider the following things:
+
+Functions are used to encapsulate a sequence of expressions that are executed together to achieve a specific goal. A single function typically does "one thing well"---often taking some input and the generating output that can potentially be handed off to another function for further processing. Drawing the lines where functions begin and end is a key skill for writing functions. When writing a function, it's important to ask yourself what do I want to encapsulate?
+There is going to be a user who will desire the ability to modify certain aspects of your code to match their specific needs or application. Aspects of your code that can be modified often become function arguments that can be specified by the user. This user can range from yourself (at a later date) to people you have never met using your code for purposes you never dreamed of. When writing any function it's important to ask what will the user want to modify in this function? Ultimately, the answer to this question will lead to the function's interface.
+
+```{r}
+library(readr)
+library(dplyr)
+
+## Download data from RStudio (if we haven't already)
+setwd("D:/AAA_ProgrammingFiles/AAA_Learning/Coursera_SoftwareDevInR/AdvR_Programming/")
+if(!file.exists("data/2016-07-20.csv.gz")) {
+        download.file("http://cran-logs.rstudio.com/2016/2016-07-20.csv.gz", 
+                      "data/2016-07-20.csv.gz")
+}
+cran <- read_csv("data/2016-07-20.csv.gz", col_ty
+```
+
+This computation is fairly straightforward and if one were only interested in knowing the number of downloads for this package on this day, there would be little more to say about the code. However, there are a few aspects of this code that one might want to modify or expand on:
+
+the date: this code only reads data for July 20, 2016. But what about data from other days? Note that we would first need to obtain that data if we were interested in knowing download statistics from other days.
+the package: this code only returns the number of downloads for the filehash package. However, there are many other packages on CRAN and we may want to know how many times these other packages were downloaded.
+
+
+The following function has two arguments:
+
+pkgname, the name of the package as a character string
+date, a character string indicating the date for which you want download statistics, in year-month-day format
+Given the date and package name, the function downloads the appropriate download logs from the RStudio server, reads the CSV file, and then returns the number of downloads for the package.
+
+```{r}
+require(dplyr)
+require(readr)
+
+## pkgname: package name (character)
+## date: YYYY-MM-DD format (character)
+num_download <- function(pkgname, date) {
+        ## Construct web URL
+        year <- substr(date, 1, 4)
+        src <- sprintf("http://cran-logs.rstudio.com/%s/%s.csv.gz",
+                       year, date)
+
+        ## Construct path for storing local file
+        dest <- file.path("data", basename(src))
+
+        ## Don't download if the file is already there!
+        if(!file.exists(dest))
+                download.file(src, dest, quiet = TRUE)
+
+        cran <- read_csv(dest, col_types = "ccicccccci", progress = FALSE)
+        cran %>% filter(package == pkgname) %>% nrow
+}
+```
+
+Call the function
+```{r}
+num_download("filehash", "2016-07-20")
+```
+
+The way that the num.download() function is currently specified, the user must enter the date and package name each time the function is called. However, it may be that there is a logical "default date" for which we always want to know the number of downloads, for any package. We can set a default value for the date argument, for example, to be July 20, 2016. In that case, if the date argument is not explicitly set by the user, the function can use the default value. The revised function might look as follows:
+
+
+```{r}
+num_download <- function(pkgname, date = "2016-07-20") {
+        year <- substr(date, 1, 4)
+        src <- sprintf("http://cran-logs.rstudio.com/%s/%s.csv.gz",
+                       year, date)
+        dest <- file.path("data", basename(src))
+        if(!file.exists(dest))
+                download.file(src, dest, quiet = TRUE)
+        cran <- read_csv(dest, col_types = "ccicccccci", progress = FALSE)
+        cran %>% filter(package == pkgname) %>% nrow
+}
+```
+
+Now we can call the function in the following manner. Notice that we do not specify the date argument.
+
+
+```{r}
+num_download("Rcpp")
+```
+
+Default values play a critical role in R functions because R functions are often called interactively. When using R in interactive mode, it can be a pain to have to specify the value of every argument in every instance of calling the function. Sometimes we want to call a function multiple times while varying a single argument (keeping the other arguments at a sensible default).
+
+Also, function arguments have a tendency to proliferate. As functions mature and are continuously developed, one way to add more functionality is to increase the number of arguments. But if these new arguments do not have sensible default values, then users will generally have a harder time using the function.
+
+As a function author, you have tremendous influence over the user's behavior by specifying defaults, so take care in choosing them. However, just note that a judicious use of default values can greatly improve the user experience with respect to your function.
+
+#### Refactoring Code
+
+Now that we have a function written that handles the task at hand in a more general manner (i.e. it can handle any package and any date), it is worth taking a closer look at the function and asking whether it is written in the most useful possible manner. In particular, it could be argued that this function does too many things:
+
+- Construct the path to the remote and local log file
+- Download the log file (if it doesn't already exist locally)
+- Read the log file into R
+- Find the package and return the number of downloads
+
+It might make sense to abstract the first two things on this list into a separate function. For example, we could create a function called check_for_logfile() to see if we need to download the log file and then num_download() could call this function.
+
+
+
+```{r}
+check_for_logfile <- function(date) {
+        year <- substr(date, 1, 4)
+        src <- sprintf("http://cran-logs.rstudio.com/%s/%s.csv.gz",
+                       year, date)
+        dest <- file.path("data", basename(src))
+        if(!file.exists(dest)) {
+                val <- download.file(src, dest, quiet = TRUE)
+                if(!val)
+                        stop("unable to download file ", src)
+        }
+        dest
+}
+```
+
+This file takes the original download code from num_download() and adds a bit of error checking to see if download.file() was successful (if not, an error is thrown with stop()).
+
+Now the num_download() function is somewhat simpler.
+
+
+
+   
+In addition to being simpler to read, another key difference is that the num_download() function does not need to know anything about downloading or URLs or files. All it knows is that there is a function check_for_logfile() that just deals with getting the data to your computer. From there, we can just read the data with read_csv() and get the information we need. This is the value of abstraction and writing functions.
+```{r}
+num_download <- function(pkgname, date = "2016-07-20") {
+        dest <- check_for_logfile(date)
+        cran <- read_csv(dest, col_types = "ccicccccci", progress = FALSE)
+        cran %>% filter(package == pkgname) %>% nrow
+} 
+```
+
+The num_downloads() function depends on the readr and dplyr packages. Without them installed, the function won't run. Sometimes it is useful to check to see that the needed packages are installed so that a useful error message (or other behavior) can be provided for the user.
+
+We can write a separate function to check that the packages are installed.
+
+```{r}
+check_pkg_deps <- function() {
+        if(!require(readr)) {
+                message("installing the 'readr' package")
+                install.packages("readr")
+        }
+        if(!require(dplyr))
+                stop("the 'dplyr' package needs to be installed first")
+}
+```
+
+There are a few things to note about this function. First, it uses the require() function to attempt to load the readr anddplyr packages. The require() function is similar to library(), however library() stops with an error if the package cannot be loaded whereas require() returns TRUE or FALSE depending on whether the package can be loaded or not. For both functions, if the package is available, it is loaded and attached to the search() path.
+
+Typically, library() is good for interactive work because you usually can't go on without a specific package (that's why you're loading it in the first place!). On the other hand, require() is good for programming because you may want to engage in different behaviors depending on which packages are not available.
+
+For example, in the above function, if the readr package is not available, we go ahead and install the package for the user (along with providing a message). However, if we cannot load the dplyr package we throw an error. This distinction in behaviors for readr and dplyr is a bit arbitrary in this case, but it illustrates the flexibility that is afforded by usingrequire() versus library().
+
+Now, our updated function can check for package dependencies.
+
+
+```{r}
+num_download <- function(pkgname, date = "2016-07-20") {
+        check_pkg_deps()
+        dest <- check_for_logfile(date)
+        cran <- read_csv(dest, col_types = "ccicccccci", progress = FALSE)
+        cran %>% filter(package == pkgname) %>% nrow
+}
+```
+
+
+### Factorizing our function
+
+One final aspect of this function that is worth noting is that as currently written it is not vectorized. This means that each argument must be a single value---a single package name and a single date. However, in R, it is a common paradigm for functions to take vector arguments and for those functions to return vector or list results. Often, users are bitten by unexpected behavior because a function is assumed to be vectorized when it is not.
+
+One way to vectorize this function is to allow the pkgname argument to be a character vector of package names. This way we can get download statistics for multiple packages with a single function call. Luckily, this is fairly straightforward to do. The two things we need to do are
+
+Adjust our call to filter() to grab rows of the data frame that fall within a vector of package names
+Use a group_by() %>% summarize() combination to count the downloads for each package.
+
+
+#### 'pkgname' can now be a character vector of names
+ 
+Now we can call the following
+```{r}
+num_download <- function(pkgname, date = "2016-07-20") {
+        check_pkg_deps()
+        dest <- check_for_logfile(date)
+        cran <- read_csv(dest, col_types = "ccicccccci", progress = FALSE)
+        cran %>% filter(package %in% pkgname) %>% 
+                group_by(package) %>%
+                summarize(n = n())
+}   
+```
+
+
+```{r}
+num_download(c("filehash", "weathermetrics"))
+
+```
+
+
+Note that the output of num_download() has changed. While it previously returned an integer vector, the vectorized function returns a data frame. If you are authoring a function that is used by many people, it is usually wise to give them some warning before changing the nature of the output.
+
+Vectorizing the date argument is similarly possible, but it has the added complication that for each date you need to download another log file. We leave this as an exercise for the reader.
+
+```{r}
+
+# TODO Insert the Solution here
+```
+
+Checking that the arguments supplied by the reader are proper is a good way to prevent confusing results or error messages from occurring later on in the function. It is also a useful way to enforce documented requirements for a function.
+
+
+
+In this case, the num_download() function is expecting both the pkgname and date arguments to be character vectors. In particular, the date argument should be a character vector of length 1. We can check the class of an argument usingis.character() and the length using the length() function.
+
+The revised function with argument checking is as follows.
+
+```{r}
+num_download <- function(pkgname, date = "2016-07-20") {
+        check_pkg_deps()
+  
+        ## Check arguments
+        if(!is.character(pkgname))
+                stop("'pkgname' should be character")
+        if(!is.character(date))
+                stop("'date' should be character")
+        if(length(date) != 1)
+                stop("'date' should be length 1")
+        dest <- check_for_logfile(date)
+        cran <- read_csv(dest, col_types = "ccicccccci", 
+                         progress = FALSE)
+        cran %>% filter(package %in% pkgname) %>% 
+                group_by(package) %>%
+                summarize(n = n())
+}    
+```
+
+Note that here, we chose to stop() and throw an error if the argument was not of the appropriate type. However, an alternative would have been to simply coerce the argument to be of character type using the as.character() function.
+
+
+
+```{r}
+num_download("filehash", c("2016-07-20", "2016-0-21"))
+```
+
+
+####Summary
+Developing functions is a key aspect of programming in R and typically involves a bottom-up process.
+
+- Code is written to accomplish a specific task or a specific instance of a task.
+- The code is examined to identify key aspects that may be modified by other users; these aspects are abstracted out of the code and made arguments of a function.
+- Functions are written to accomplish more general versions of a task; specific instances of the task are indicated by setting values of function arguments.
+- Function code can be re-factored to provide better modularity and to divide functions into specific sub-tasks.
+- Functions can be assembled and organized into R packages.
+
+
+
+
+
+
