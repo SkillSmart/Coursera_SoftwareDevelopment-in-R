@@ -1,0 +1,73 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+fun <- function(){
+  stop("Something bad happened.")
+}
+
+fun()
+```
+
+```{r}
+beera <- function(expr){
+  
+  tryCatch(expr, 
+           error = function(e){
+             message("An error occurred:\n", e)
+           },
+           warning = function(e){
+             message("A warning occured:\n", e)
+           },
+           finally = {
+             message("Finally done!")
+           }
+           )
+}
+
+beera({"two" +2
+  })
+```
+
+
+Writing a function to check if n is even
+```{r}
+even <- function(n){
+  tryCatch(n %% 2 == 0, error = function(e){ FALSE })
+  
+}
+
+is_even("two")
+
+# This works, but is seriously slow....
+```
+When we want to catch errors here we could do...
+```{r}
+is_even <- function(n){
+  if(n %% 2 == 0){
+    TRUE
+  } else { FALSE }
+  
+}
+```
+
+```{r}
+is_even <- function(n){
+  is.numeric(n) && n %% 2 == 0
+}
+
+is_even(rnorm(1000
+              ))
+```
+
+Timing the runtime
+```{r}
+require(microbenchmark)
+microbenchmark(sapply(letters, is_even))
+```
+```{r}
+microbenchmark(sapply(letters, even))
+```
+
