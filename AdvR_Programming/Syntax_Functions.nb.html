@@ -173,17 +173,103 @@ $(document).ready(function () {
 
 
 <!-- rnb-text-begin -->
+<p>RegEx</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuI1JlZ2V4IHRvIGZpbmQgbnVtYmVycyBhdCB0aGUgYmVnaW5uaW5nIG9mIGEgbGluZVxuXCJeXFxkezEsMn1cXGIkXCJcbmBgYCJ9 -->
 <pre class="r"><code>#Regex to find numbers at the beginning of a line
 &quot;^\d{1,2}\b$&quot;</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6ICdcXGQnIGlzIGFuIHVucmVjb2duaXplZCBlc2NhcGUgaW4gY2hhcmFjdGVyIHN0cmluZyBzdGFydGluZyBcIlwiXlxcZFwiXG4ifQ== -->
+<pre><code>Error: '\d' is an unrecognized escape in character string starting &quot;&quot;^\d&quot;</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<div id="datatypes" class="section level2">
+<h2>Datatypes</h2>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudW5saXN0KGxpc3QoMSwyLDMsNCw1KSlcblxuYGBgIn0= -->
+<pre class="r"><code>unlist(list(1,2,3,4,5))
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEgMiAzIDQgNVxuIn0= -->
+<pre><code>[1] 1 2 3 4 5</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="recursice-functions" class="section level1">
+<h1>Recursice functions</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmVjX3N1bSA8LSBmdW5jdGlvbih2KXtcbiAgcmVzdWx0IDwtIDBcbiAgZm9yKGkgaW4gdil7XG4gICAgcmVzdWx0IDwtIHJlc3VsdCArIGlcbiAgfVxuICByZXN1bHRcbn1cblxuIyBXcml0aW5nIGEgcmVjdXJzaXZlIHZlcnNpb25cbnJlY19zdW0gPC0gZnVuY3Rpb24odil7XG4gIGlmKGxlbmd0aCh2KSA9PSAxKXtcbiAgICB2XG4gIH0gZWxzZSB7XG4gICAgdlsxXSArIHJlY19zdW0odlstMV0pXG4gIH1cbn1cbmBgYCJ9 -->
+<pre class="r"><code>vec_sum &lt;- function(v){
+  result &lt;- 0
+  for(i in v){
+    result &lt;- result + i
+  }
+  result
+}
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlNwZWNpZmljIGZ1bmN0aW9uIGFwcGxpY2F0aW9ucyINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCg0KYGBge3J9DQojUmVnZXggdG8gZmluZCBudW1iZXJzIGF0IHRoZSBiZWdpbm5pbmcgb2YgYSBsaW5lDQoiXlxkezEsMn1cYiQiDQpgYGANCg0K</div>
+# Writing a recursive version
+rec_sum &lt;- function(v){
+  if(length(v) == 1){
+    v
+  } else {
+    v[1] + rec_sum(v[-1])
+  }
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Testing performance</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUZXN0aW5nIHRoZSBmdW5jdGlvbnNcbnZlY19zdW0ocm5vcm0oMTAwKSlcbnJlY19zdW0ocm5vcm0oMTAwKSlcblxuYGBgIn0= -->
+<pre class="r"><code># Testing the functions
+vec_sum(rnorm(100))
+rec_sum(rnorm(100))
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Fibonnaci Numbers</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWFwX2RibCgxOjI1LCBmaWIpXG5cbmBgYCJ9 -->
+<pre class="r"><code>map_dbl(1:25, fib)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSAgICAgMCAgICAgMSAgICAgMSAgICAgMiAgICAgMyAgICAgNSAgICAgOCAgICAxMyAgICAyMSAgICAzNCAgICA1NSAgICA4OSAgIDE0NCAgIDIzMyAgIDM3NyAgIDYxMCAgIDk4NyAgMTU5NyAgMjU4NCAgNDE4MSAgNjc2NSAxMDk0NiAxNzcxMVxuWzI0XSAyODY1NyA0NjM2OFxuIn0= -->
+<pre><code> [1]     0     1     1     2     3     5     8    13    21    34    55    89   144   233   377   610   987  1597  2584  4181  6765 10946 17711
+[24] 28657 46368</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Optimizing this function</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmliX21lbSA8LSBmdW5jdGlvbihuKSB7XG4gIHN0b3BpZm5vdChuID4gMClcbiAgaWYobiA9PTEgKXtcbiAgICAwXG4gIH0gZWxzZSBpZihuID09IDIpe1xuICAgIDFcbiAgfSBlbHNlIHtcbiAgICBmaWJfdGJsW24gLSAxXSA8PC0gZmliX21lbShuIC0gMSlcbiAgICBmaWJfdGJsW24gLSAyXSA8PC0gZmliX21lbShuIC0gMilcbiAgICBmaWJfdGJsW24gLSAxXSArIGZpYl90YmxbbiAtIDJdXG4gIH1cbn1cblxubWFwX2RibCgxOjI1LCBmaWJfbWVtKVxuYGBgIn0= -->
+<pre class="r"><code>fib_mem &lt;- function(n) {
+  stopifnot(n &gt; 0)
+  if(n ==1 ){
+    0
+  } else if(n == 2){
+    1
+  } else {
+    fib_tbl[n - 1] &lt;&lt;- fib_mem(n - 1)
+    fib_tbl[n - 2] &lt;&lt;- fib_mem(n - 2)
+    fib_tbl[n - 1] + fib_tbl[n - 2]
+  }
+}
+
+map_dbl(1:25, fib_mem)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlNwZWNpZmljIGZ1bmN0aW9uIGFwcGxpY2F0aW9ucyINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCg0KUmVnRXgNCmBgYHtyfQ0KI1JlZ2V4IHRvIGZpbmQgbnVtYmVycyBhdCB0aGUgYmVnaW5uaW5nIG9mIGEgbGluZQ0KIl5cZHsxLDJ9XGIkIg0KDQojIFJlZ2V4IHRvIHNlbGVjdCB0aGUgaHRtbCBhZGRyZXNzIGluY2x1c2l2ZSBhcmd1bWVudHMNCiIoaHR0cDpcL1wvXHcrXC5jb21cL1tcdytcLlx3K10rKWh0bWwoXD9cdys9W1x3fFxkXSspIg0KDQojIFNlbGVjdCBSIExpc3Qgb3V0cHV0DQoiXlxzK1xbXF0iDQoNCmBgYA0KDQojIyBEYXRhdHlwZXMNCmBgYHtyfQ0KIyBVbmxpc3QgYSBsaXN0DQpsaXN0KDEsMiwzLDQsNSkNCnVubGlzdChsaXN0KDEsMiwzLDQsNSkpDQoNCg0KYGBgDQoNCiMgUmVjdXJzaWNlIGZ1bmN0aW9ucw0KYGBge3J9DQp2ZWNfc3VtIDwtIGZ1bmN0aW9uKHYpew0KICByZXN1bHQgPC0gMA0KICBmb3IoaSBpbiB2KXsNCiAgICByZXN1bHQgPC0gcmVzdWx0ICsgaQ0KICB9DQogIHJlc3VsdA0KfQ0KDQojIFdyaXRpbmcgYSByZWN1cnNpdmUgdmVyc2lvbg0KcmVjX3N1bSA8LSBmdW5jdGlvbih2KXsNCiAgaWYobGVuZ3RoKHYpID09IDEpew0KICAgIHYNCiAgfSBlbHNlIHsNCiAgICB2WzFdICsgcmVjX3N1bSh2Wy0xXSkNCiAgfQ0KfQ0KYGBgDQoNClRlc3RpbmcgcGVyZm9ybWFuY2UNCmBgYHtyfQ0KIyBUZXN0aW5nIHRoZSBmdW5jdGlvbnMNCnZlY19zdW0ocm5vcm0oMTAwKSkNCnJlY19zdW0ocm5vcm0oMTAwKSkNCg0KYGBgDQoNCkZpYm9ubmFjaSBOdW1iZXJzIA0KYGBge3J9DQojIFNldHRpbmcgdXAgdGhlIHJlY3Vyc2l2ZSBsb29wIA0KZmliIDwtIGZ1bmN0aW9uKG4pew0KICBzdG9waWZub3QobiA+IDApDQogIGlmKCBuID09MSl7DQogICAgMA0KICB9IGVsc2UgaWYobiA9PSAyKSB7DQogICAgMQ0KICB9IGVsc2Ugew0KICAgIGZpYihuLTEpICsgZmliKG4gLTIpDQogIH0NCn0NCg0KbWFwX2RibCgxOjI1LCBmaWIpDQoNCmBgYA0KDQpPcHRpbWl6aW5nIHRoaXMgZnVuY3Rpb24NCg0KYGBge3J9DQpmaWJfbWVtIDwtIGZ1bmN0aW9uKG4pIHsNCiAgc3RvcGlmbm90KG4gPiAwKQ0KICBpZihuID09MSApew0KICAgIDANCiAgfSBlbHNlIGlmKG4gPT0gMil7DQogICAgMQ0KICB9IGVsc2Ugew0KICAgIGZpYl90YmxbbiAtIDFdIDw8LSBmaWJfbWVtKG4gLSAxKQ0KICAgIGZpYl90YmxbbiAtIDJdIDw8LSBmaWJfbWVtKG4gLSAyKQ0KICAgIGZpYl90YmxbbiAtIDFdICsgZmliX3RibFtuIC0gMl0NCiAgfQ0KfQ0KDQptYXBfZGJsKDE6MjUsIGZpYl9tZW0pDQpgYGANCg==</div>
 
 
 

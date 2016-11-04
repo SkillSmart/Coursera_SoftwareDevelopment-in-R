@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 ## Course Note from Week 2 - Advanced Programming in R
 ### Functional Programming

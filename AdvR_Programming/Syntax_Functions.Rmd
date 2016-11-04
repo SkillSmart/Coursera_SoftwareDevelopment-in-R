@@ -4,8 +4,89 @@ output: html_notebook
 ---
 
 
+RegEx
 ```{r}
 #Regex to find numbers at the beginning of a line
 "^\d{1,2}\b$"
+
+# Regex to select the html address inclusive arguments
+"(http:\/\/\w+\.com\/[\w+\.\w+]+)html(\?\w+=[\w|\d]+)"
+
+# Select R List output
+"^\s+\[\]"
+
 ```
 
+## Datatypes
+```{r}
+# Unlist a list
+list(1,2,3,4,5)
+unlist(list(1,2,3,4,5))
+
+
+```
+
+# Recursice functions
+```{r}
+vec_sum <- function(v){
+  result <- 0
+  for(i in v){
+    result <- result + i
+  }
+  result
+}
+
+# Writing a recursive version
+rec_sum <- function(v){
+  if(length(v) == 1){
+    v
+  } else {
+    v[1] + rec_sum(v[-1])
+  }
+}
+```
+
+Testing performance
+```{r}
+# Testing the functions
+vec_sum(rnorm(100))
+rec_sum(rnorm(100))
+
+```
+
+Fibonnaci Numbers 
+```{r}
+# Setting up the recursive loop 
+fib <- function(n){
+  stopifnot(n > 0)
+  if( n ==1){
+    0
+  } else if(n == 2) {
+    1
+  } else {
+    fib(n-1) + fib(n -2)
+  }
+}
+
+map_dbl(1:25, fib)
+
+```
+
+Optimizing this function
+
+```{r}
+fib_mem <- function(n) {
+  stopifnot(n > 0)
+  if(n ==1 ){
+    0
+  } else if(n == 2){
+    1
+  } else {
+    fib_tbl[n - 1] <<- fib_mem(n - 1)
+    fib_tbl[n - 2] <<- fib_mem(n - 2)
+    fib_tbl[n - 1] + fib_tbl[n - 2]
+  }
+}
+
+map_dbl(1:25, fib_mem)
+```
