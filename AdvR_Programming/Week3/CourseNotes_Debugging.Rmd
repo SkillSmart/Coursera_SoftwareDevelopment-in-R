@@ -25,7 +25,7 @@ In the previous section, we discussed what to do when software generates conditi
 This section describes the tools for debugging your software in R. R comes with a set of built-in tools for interactive debugging that can be useful for tracking down the source of problems. These functions are
 
 - `browser()`: an interactive debugging environment that allows you to step through code one expression at a time
-- `debug()` / debugonce(): a function that initiates the browser within a function
+- `debug()` / `debugonce()`: a function that initiates the browser within a function
 - `trace()`: this function allows you to temporarily insert pieces of code into other functions to modify their behavior
 - `recover()`: a function for navigating the function call stack after a function has thrown an error
 - `traceback()`: prints out the function call stack after an error occurs; does nothing if there’s no error
@@ -33,7 +33,7 @@ This section describes the tools for debugging your software in R. R comes with 
 
 ### Conclusion
 
-The debugging tools in any programming language can be essential for tracking down problems in code, especially when the code becomes complex and spans many lines. However, one should not lean on them too heavily so that they become a regular part of the programming process. It is easy to get into a situation where you “throw some code out there” and then let the debugger catch it before something bad happens. If you find yourself coding up a function and then immediately calling debug() on it, you are in this situation.
+The debugging tools in any programming language can be essential for tracking down problems in code, especially when the code becomes complex and spans many lines. However, one should not lean on them too heavily so that they become a regular part of the programming process. It is easy to get into a situation where you “throw some code out there” and then let the debugger catch it before something bad happens. If you find yourself coding up a function and then immediately calling `debug()` on it, you are in this situation.
 
 A better approach is to think carefully about what a function should do and then consider how to code it up. A few minutes of careful forethought can often save the hapless programmer hours of debugging.
 
@@ -41,7 +41,9 @@ A better approach is to think carefully about what a function should do and then
 
 ### Debugging a runtime code with `traceback()`
 
-If an error occurs, the easiest thing to do is to immediately call the traceback() function. This function returns the function call stack just before the error occurred so that you can see what level of function calls the error occurred. If you have many functions calling each other in succeeding, the traceback()output can be useful for identifying where to go digging first.
+If an error occurs, the easiest thing to do is to immediately call the `traceback()` function. 
+
+This function returns the function call stack just before the error occurred so that you **can see what level of function calls the error** occurred. If you have many functions calling each other in succeeding, the `traceback()` output can be useful for identifying where to go digging first.
 
 
 
@@ -60,18 +62,18 @@ error_if_n_is_greater_than_zero <- function(n){
 
 error_if_n_is_greater_than_zero(5)
 ```
-Running the traceback() function immediately after getting this error would give us
+Running the `traceback()` function immediately after getting this error would give us
 
 ```{r}
 traceback()
 ```
 
 From the traceback, we can see that the error occurred in the `check_n_value()` function. 
-Put another way, the `stop(` function was called from within the `check_n_value()` function.
+Put another way, the `stop()` function was called from within the `check_n_value()` function.
 
 From the traceback output, it is often possible to determine in which function and on which line of code an error occurs. If you are the author of the code in question, one easy thing to do is to insert a call to the browser() function in the vicinity of the error (ideally, before the error occurs). The browser()function takes now arguments and is just placed wherever you want in the function. Once it is called, you will be in the browser environment, which is much like the regular R workspace environment except that you are inside a function.
 
-### úsing the `browser()` to examine a Function Envrionment
+### Using the `browser()` to examine a Function Envrionment
 
 ```{r}
 check_n_value <- function(n) {
