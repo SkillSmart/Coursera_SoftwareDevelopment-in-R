@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Object Oriented Programming in R
+## [Object Oriented Programming in R](http://rdpeng.github.io/RProgDA/object-oriented-programming.html)
 
 *Object oriented programming** is one of the most successful and widespread philosophies of programming and is a cornerstone of many programming languages including Java, Ruby, Python, and C++. 
 
@@ -27,7 +27,7 @@ The **two older object oriented systems** in R are called
 
 - `RC` which stands for “reference classes.” Programmers who are already familiar with object oriented programming will feel at home using RC.
 
-### General Principles of OOP
+### [General Principles of OOP](http://rdpeng.github.io/RProgDA/object-oriented-programming.html#object-oriented-principles)
 
 There a several key principles in object oriented programming which span across R’s object systems and other programming languages. 
 
@@ -57,7 +57,7 @@ Party buses **have all of the same attributes and methods as our bus class**, bu
 - `S4` is a more strict object oriented system that build upon ideas in S3.
 - `Reference Classes` are a modern object oriented system that is similar to Java, C++, Python, or Ruby.
 
-### S3
+### [S3](http://rdpeng.github.io/RProgDA/object-oriented-programming.html#s3)
 
 Conveniently everything in R is an object. By “everything” I mean every single “thing” in R including numbers, functions, strings, data frames, lists, etc. If you want to know the class of an object in R you can simply use the class() function:
 
@@ -95,7 +95,7 @@ class(special_num_2) <- "special_number"
 class(special_num_2)
 ```
 
-#### Creating a constructor Function in R
+#### S3 - Creating a constructor Function in S3
 
 This is completely legal R code, but if you want to have a better behaved S3 class you should create a **constructor which returns an S3 object**. 
 
@@ -176,7 +176,7 @@ print(square_4)
 # attr(,"class")
 ```
 
-#### Specifiy generic methods for a class
+#### S3 - Specifiy generic methods for a class 
 
 Doesn’t that look ugly? 
 Lucky for us `print()` is a generic method, so we can **specify a print method for the shape_S3 class**:
@@ -212,7 +212,7 @@ print(shape_s3(c(2, 3, 4, 5)))
 ```
 
 
-#### View all associated methods for a generic function
+#### S3 - View all associated methods for a generic function
 Since printing an object to the console is one of the most common things to do in R, nearly every class has an assocaited print method! 
 To see all of the methods associated with a generic like `print()` use the `methods()` function:
 
@@ -246,7 +246,7 @@ inherits(square_4, "square")
 ```
 
 
-### S4
+### [The S4 System - Adding the "Superclass" inheritance](http://rdpeng.github.io/RProgDA/object-oriented-programming.html#s4)
 
 The S4 system is slightly more restrictive than S3, but it’s similar in many ways. 
 
@@ -360,7 +360,7 @@ print(my_bus)
 print(my_party_bus)
 ```
 
-### Reference Classes
+### [The "Reference Classes" in R - Modern Object Oriented Programming in R](http://rdpeng.github.io/RProgDA/object-oriented-programming.html#reference-classes)
 
 With reference classes we leave the world of R’s old object oriented systems and enter the philosophies of other prominent object oriented programming languages. 
 
@@ -385,7 +385,7 @@ Student <- setRefClass("Student",
                       ))
 ```
 
-To recap: 
+**To recap**: 
 
 - we’ve created a class definition called Student which defines the student class. 
 - his class has five fields and three methods. 
@@ -421,7 +421,7 @@ brooke$credits
 
 ```
 
-Notice that the `add_credits()` method uses the complex assignment operator `(<<-)`. 
+**Notice that** the `add_credits()` method uses the complex assignment operator `(<<-)`. 
 You need to use this operator if you want to modify one of the fields of an object with a method. 
 You’ll learn more about this operator in the **Expressions & Environments** section.
 

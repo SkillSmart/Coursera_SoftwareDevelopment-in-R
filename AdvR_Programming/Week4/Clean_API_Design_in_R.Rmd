@@ -10,18 +10,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Adhering to Community Standards in Functional R Development
+[Course Book Reference](http://rdpeng.github.io/RProgDA/gaining-your-tidyverse-citizenship.html)
 
 ## Motivating Example - The "Tidyverse Philosophy"
 
 Many of the tools that we discuss in this book revolve around the so-called “tidyverse” set of tools. These tools, largely developed by Hadley Wickham but also including a diverse community of developers, have a set of principles that are adhered to when they are being developed. Hadley Wicham laid out these principles in his Tidy Tools Manifesto, a vignette within the tidyverse package.
 
-### Reusing existing DataStructures
+### [Reusing existing DataStructures](http://rdpeng.github.io/RProgDA/gaining-your-tidyverse-citizenship.html#reuse-existing-data-structures)
 
 R has a number of data structures (data frames, vectors, etc.) that people have grown accustomed to over the many years of R’s existence. While it is often tempting to develop custom data structures, for example, by using S3 or S4 classes, it is often worthwhile to consider reusing a commonly used structure. You’ll notice that many tidyverse functions make heavy use of the data frame (typically as their first argument), because the data frame is a well-known, well-understood structure used by many analysts. Data frames have a well-known and reasonably standardized corresponding file format in the CSV file.
 
 While common data structures like the data frame may not be perfectly suited to your needs as you develop your own software, it is worth considering using them anyway because the enormous value to the community that is already familiar with them. If the user community feels familiar with the data structures required by your code, they are likely to adopt them more quickly.
 
-### Composing simple functions using the "Pipe Operator"
+### [Composing simple functions using the "Pipe Operator"](http://rdpeng.github.io/RProgDA/gaining-your-tidyverse-citizenship.html#compose-simple-functions-with-the-pipe)
 
 One of the original principles of the Unix operating system was that every program should do “one thing well”. 
 
@@ -37,7 +38,7 @@ Much like the original Unix systems, the `tidyverse` eschews building monolithic
 
 This is why the first principle (reuse existing data structures) is important, because the reuse of data structures that are well-understood and characterized lessens the burden on other developers who are developing new code and would prefer not to worry about new-fangled data structures at every turn.
 
-### R as a functional Programming Language
+### [R as a functional Programming Language](http://rdpeng.github.io/RProgDA/gaining-your-tidyverse-citizenship.html#embrace-functional-programming)
 This can be a tough principle for people coming from other non-functional programming languages. But the reality is, R is a functional programming language (with its roots in Scheme) and it’s best not to go against the grain. In our section on Functional Programming, we outlined many of the principles that are fundamental to functional-style programming. In particular, the purrr package implements many of those ideas.
 
 One benefit to functional programming is that it can at times be easier to reason about when simply looking at the code. 
