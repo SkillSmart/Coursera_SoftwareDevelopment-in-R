@@ -2,7 +2,9 @@
 title: "CourseNotes_AdvR_Week4"
 author: "Frank Fichtenmueller"
 date: "6 November 2016"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -17,8 +19,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 It’s still important to understand these older systems since a **huge amount of R code is written with them**, and they’re still useful and interesting! Long time object oriented programmers reading this book may find these old ideas refreshing.
 
-The **two older object oriented systems** in R are called `S3` and `S4`, and the **modern system** is called `RC` which stands for “reference classes.” 
-Programmers who are already familiar with object oriented programming will feel at home using RC.
+The **two older object oriented systems** in R are called 
+- `S3` and 
+- `S4`, and the 
+
+*modern system** is called 
+
+- `RC` which stands for “reference classes.” Programmers who are already familiar with object oriented programming will feel at home using RC.
 
 ### General Principles of OOP
 
@@ -33,22 +40,22 @@ Just like the world is full of physical objects, your programs can be made of ob
 Buses in general can perform the same actions, and these actions are also described in the `class`: a bus can open and close its doors, the bus can steer, and the accelerator or the brake can be used to slow down or speed up the bus. Each of these actions can be described as a method which is a function that is associated with a particular class. We’ll be using this class in order to create individual bus objects, so we should provide a constructor which is a method where we can specify attributes of the bus as arguments. This constructor method will then return an individual bus object with the attributes that we specified.
 
 #### Inheritance
-You could also imagine that after making the bus class you might want to make a special kind of class for a party bus. 
+You could also imagine that after making the bus class you **might want to make a special kind of class for a party bus**. 
 
-Party buses have all of the same attributes and methods as our bus class, but they also have additional attributes and methods like the number of refrigerators, window blinds that can be opened and closed, and smoke machines that can be turned on and off. Instead of rewriting the entire bus class and then adding new attributes and methods, it is possible for the party bus class to inherit all of the attributes and methods from the bus class. In this framework of inheritance, we talk about the bus class as the super-class of the party bus, and the party bus is the sub-class of the bus. What this relationship means is that the party bus has all of the same attributes and methods as the bus class plus additional attributes and methods.
+Party buses **have all of the same attributes and methods as our bus class**, but they *also have additional attributes and methods* like the number of refrigerators, window blinds that can be opened and closed, and smoke machines that can be turned on and off. Instead of rewriting the entire bus class and then adding new attributes and methods, it is possible for the party bus class to inherit all of the attributes and methods from the bus class. In this framework of inheritance, we talk about the bus class as the super-class of the party bus, and the party bus is the sub-class of the bus. What this relationship means is that the party bus has all of the same attributes and methods as the bus class plus additional attributes and methods.
 
 ## Summary
 
-- R has three object oriented systems: S3, S4, and Reference Classes.
-- Reference Classes are the most similar to classes and objects in other programming languages.
-- Classes are blueprints for an object.
-- Objects are individual instances of a class.
-- Methods are functions that are associated with a particular class.
-- Constructors are methods that create objects.
-- Everything in R is an object.
-- S3 is a liberal object oriented system that allows you to assign a class to any object.
-- S4 is a more strict object oriented system that build upon ideas in S3.
-- Reference Classes are a modern object oriented system that is similar to Java, C++, Python, or Ruby.
+- R has three object oriented systems: `S3`, `S4`, and `Reference Classes`.
+- `Reference Classes` are the **most similar to classes and objects in other programming languages**.
+- `Classes` are blueprints for an object.
+- `Objects` are individual instances of a class.
+- `Methods` are functions that are associated with a particular class.
+- `Constructors` are methods that create objects.
+- **Everything in R** is an `object`.
+- `S3` is a liberal object oriented system that allows you to assign a class to any object.
+- `S4` is a more strict object oriented system that build upon ideas in S3.
+- `Reference Classes` are a modern object oriented system that is similar to Java, C++, Python, or Ruby.
 
 ### S3
 
@@ -63,7 +70,11 @@ class(class)
 
 ```
 
-Now it’s time to wade into some of the quirks of R’s object oriented systems. In the S3 system you can arbitrarily assign a class to any object, which goes against most of what we discussed in the Object Oriented Principles section. Class assignments can be made using thestructure() function, or you can assign the class using class()and <-:
+Now it’s time to wade into some of the quirks of R’s object oriented systems. In the S3 system you can arbitrarily assign a class to any object, which goes against most of what we discussed in the Object Oriented Principles section. 
+
+Class assignments can be made: 
+- using the `structure()` function, or you can 
+- assign the class using `class()` and `<-` :
 
 
 
@@ -84,9 +95,11 @@ class(special_num_2) <- "special_number"
 class(special_num_2)
 ```
 
-This is completely legal R code, but if you want to have a better behaved S3 class you should create a constructor which returns an S3 object. The shape_S3() function below is a constructor that returns a shape_S3 object:
+#### Creating a constructor Function in R
 
+This is completely legal R code, but if you want to have a better behaved S3 class you should create a **constructor which returns an S3 object**. 
 
+The `shape_S3()` function below is a constructor that returns a `shape_S3 object`:
 ```{r}
 shape_s3 <- function(side_lengths){
   structure(list(side_lengths = side_lengths), class = "shape_S3")
