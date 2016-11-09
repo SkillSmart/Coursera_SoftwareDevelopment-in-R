@@ -59,7 +59,9 @@ Party buses **have all of the same attributes and methods as our bus class**, bu
 
 ### [S3](http://rdpeng.github.io/RProgDA/object-oriented-programming.html#s3)
 
-Conveniently everything in R is an object. By “everything” I mean every single “thing” in R including numbers, functions, strings, data frames, lists, etc. If you want to know the class of an object in R you can simply use the class() function:
+Conveniently everything in R is an object. By “everything” I mean every single “thing” in R including numbers, functions, strings, data frames, lists, etc. 
+
+If you **want to know the class of an object in R** you can simply use the `class()` function:
 
 ```{r}
 class(2)
@@ -70,7 +72,9 @@ class(class)
 
 ```
 
-Now it’s time to wade into some of the quirks of R’s object oriented systems. In the S3 system you can arbitrarily assign a class to any object, which goes against most of what we discussed in the Object Oriented Principles section. 
+Now it’s time to wade into some of the quirks of R’s object oriented systems. 
+
+In the **S3 system** you can *arbitrarily assign a class to any object*, which goes against most of what we discussed in the Object Oriented Principles section. 
 
 Class assignments can be made: 
 - using the `structure()` function, or you can 
